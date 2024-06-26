@@ -25,7 +25,7 @@ Focused ultrasound generates both mechanical vibrations and heat, so it can both
 
 Then, in order to get the ultrasound to the right part of the brain, you need to focus it. This can be done in many ways, but the easiest to illustrate, is if you have a bunch of weak ultrasound beams, which all converge at the same point:
 
-![how focused ultrasound works](/how_focused_ultrasound_works.png)
+![how focused ultrasound works](/resources/how_focused_ultrasound_works.jpg)
 
 The beam will be too weak to do anything at the surface, but at the focal point, it will be strong enough to affect neurons.
 
