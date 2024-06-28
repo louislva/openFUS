@@ -1,5 +1,7 @@
 # openFUS: a cheap, open-source, easy to replicate FUS device for hackers & researchers
 
+View [current design (subject to change)](/DESIGN.md) 
+
 ### Background
 
 Transcranial focused ultrasound (tFUS) is a non-invasive neuromodulation technique, which has millimeter precision and can reach any depth in the brain. It's safe, and has been used in humans to:
