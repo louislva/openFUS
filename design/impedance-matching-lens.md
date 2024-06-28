@@ -1,2 +1,2 @@
-### [Design](/DESIGN.md) → Impedance Matching Lens
+### [Design](/design.md) → Impedance Matching Lens
 

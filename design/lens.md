@@ -1,2 +1,2 @@
-### [Design](/DESIGN.md) → Lens
+### [Design](/design.md) → Lens
 
