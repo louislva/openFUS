@@ -41,7 +41,7 @@ For this neuroscience renaissance to happen, **FUS needs to be more accessible**
 
 ### Contributing
 
-We need help! Here are some of our TODOs:
+We need your help! Here are some of our TODOs:
 
 - Figure out how to drive the transducer (cheaply, without distortion, without standing waves in cranium)
 - Design and manufacture the accoustic lens
@@ -49,4 +49,4 @@ We need help! Here are some of our TODOs:
 - Write software to control the device
 - Get funding for testing
 
-If you're interested in helping, please reach out to Louis Arge [on Twitter](https://x.com/louisvarge) or [by email](mailto:louis@muditalabs.ai).
+If you're interested in contributing, please reach out to Louis Arge [on Twitter](https://x.com/louisvarge) or [by email](mailto:louis@muditalabs.ai).
