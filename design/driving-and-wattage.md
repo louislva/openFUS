@@ -1,2 +1,2 @@
-### [Design](/design.md) → Driving and Wattage
+# [Design](/design.md) → Driving and Wattage
 
