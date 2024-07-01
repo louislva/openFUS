@@ -25,13 +25,17 @@ Here:
 
 **How do we mix silver & epoxy?**
 
-Current understanding: As long as the silver particles are small enough (< 1/10th the wavelength of the ultrasound), evenly distributed, and similar sizes, they won't scatter or reflect the ultrasound.
+*Easy answer: Buy a premade silver-epoxy,** like [this one](https://www.mouser.com/ProductDetail/MG-Chemicals/8330S-21G?qs=yK3xcw%2FedWGxbq%252BycI%252BFew%3D%3D&utm_id=17222215321&gad_source=1) (or for the [europoors](https://www.praud.pl/kleje_do_elektroniki/kleje_przewodzace_prad_elektryczny/dwuskladnikowe_kleje_epoksydowe/8331d_mg_chemicals))
+
+Otherwise, my current understanding is: As long as the silver particles are small enough (like < 1/10th the wavelength, or something like that), evenly distributed, and similar sizes, they won't scatter or reflect the ultrasound.
 
 For 500khz ultrasound, with a speed of sound of 3951 m/s, the wavelength is:
 
 3951 m / 500000 = 0.007902 m = 7.902 mm
 
 Which means the silver particles should be < 0.79 mm in size.
+
+- Sigma Aldrich sells silver nanoparticles that are 8 μm (0.008 mm) in size. This is well under the 0.79 mm limit.
 
 **How do we apply it precisely?**
 
