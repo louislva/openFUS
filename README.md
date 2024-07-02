@@ -1,6 +1,6 @@
 # openFUS: a cheap, open-source, easy to replicate FUS device for hackers & researchers
 
-View [current design (subject to change)](/design.md) 
+View [current design (subject to change)](/design/) 
 
 ### Background
 
