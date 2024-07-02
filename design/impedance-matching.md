@@ -1,4 +1,4 @@
-# [Design](/design.md) → Impedance Matching Lens
+# [Design](/design.md) → Impedance Matching: Lens & backing
 
 We need to impedence match the [lens](/design/lens.md) (TPX; 1.66 MRayl) and the piezoceramic (PZT-5H; 34.2 MRayl).
 
