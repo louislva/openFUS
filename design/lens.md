@@ -8,7 +8,7 @@
 **About TPX (Polymethylpentene):**
 
 Density = 0.83 g/cm³
-Speed of sound = 2000-2200 m/s (per ChatGPT)
+Speed of sound = 2000-2200 m/s (per ChatGPT; own research says ~2100 m/s)
 
 Acoustic impedance = 830kg/m³ * 2000m/s = 1.66 * 10^6 kg/(m^2 s)
 Acoustic impedance = 1.66 * 10^6 kg/(m^2 s) = <u>1.66 MRayl</u>
