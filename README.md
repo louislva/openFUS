@@ -45,10 +45,9 @@ For this neuroscience renaissance to happen, **FUS needs to be more accessible**
 
 We need your help! Here are some of our TODOs:
 
-- Figure out how to drive the transducer (cheaply, without distortion, without standing waves in cranium)
-- Design and manufacture the accoustic lens
-- Setup testing equipment (water tank, hydrophone, oscilloscope)
-- Write software to control the device
-- Get funding for testing
+- Is there a cheap way to generate sine waves at the wattage we need?
+- CNC machining of the lens
+- Testing equipment for focusing (water tank & hydrophone)
+- Neuronavigation software (computer vision that tracks skull + openFUS device)
 
-If you're interested in contributing, please reach out to Louis Arge [on Twitter](https://x.com/louisvarge) or [by email](mailto:louis@muditalabs.ai).
+If you're interested in contributing, please reach out to Louis Arge [on Twitter](https://x.com/louisvarge), [by email](mailto:louis@muditalabs.ai), or if you have something very concrete: just open a PR.
