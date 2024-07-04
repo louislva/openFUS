@@ -203,9 +203,9 @@ WATER = 1500
 PLA = 2246  # Least attenuating
 PA12 = 2242
 ABS = 2250
-TPX = 2100
-
+PMP = (2093 + 2097) / 2 # https://www.sciencedirect.com/science/article/abs/pii/S0301562911002857, https://www.osti.gov/servlets/purl/1574369
+PP = (2470 + 2660) / 2 # https://www.ndt.net/links/proper.htm
 
 if __name__ == "__main__":
-    make_lens(55, 30, WATER, TPX, save_to="500khz_water_TPX.obj") # Ultrasound lens
-    # make_lens(200, 100, AIR, TPX, save_to="15khz_air_TPX.obj") # Normal audio lens
+    make_lens(55, 30, WATER, PMP, save_to="lens_f55_d30_water_pmp.obj")
+    make_lens(55, 30, WATER, PP, save_to="lens_f55_d30_water_pp.obj")
