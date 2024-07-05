@@ -39,16 +39,23 @@ SILVER_DENSITY = 10.49 # g/cm^3
 def guess_silver_mix_by_density(density):
     return (density - EPOXY_DENSITY) / (SILVER_DENSITY - EPOXY_DENSITY)
 
-if __name__ == "__main__":
-    density = 3
+def report(name: str, density: float):
+    print("===", name, "===")
     silver_mix = guess_silver_mix_by_density(density)
-    print(f"Silver mix: {silver_mix}")
+    print(f"- Silver mix: {silver_mix}")
 
     young_modulus = mixture_linear_volume(SILVER_YOUNG_MODULUS, silver_mix, EPOXY_YOUNG_MODULUS, 1 - silver_mix)
-    print(f"Young modulus: {young_modulus}")
+    print(f"- Young modulus: {young_modulus}")
     
     speed_of_sound = calc_speed_of_sound(young_modulus, density)
-    print(f"Speed of sound: {speed_of_sound}")
+    print(f"- Speed of sound: {speed_of_sound}")
 
     impedance = calc_impedance(density, speed_of_sound)
-    print(f"Impedance: {impedance}")
+    print(f"- Impedance: {impedance}")
+    print()
+
+if __name__ == "__main__":
+    report("8330S", 3.06)
+    report("8330D", 3.22)
+    report("8331D", 2.4)
+    report("8331S", 2.42)
