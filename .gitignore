@@ -1,3 +1,9 @@
 *.obj
 *.blend1
 *.FCBak
+
+# LTSpice other files
+*.log
+*.net
+*.op.raw
+*.raw
