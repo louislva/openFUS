@@ -10,6 +10,9 @@ Here are the components, roughly listed from back to front:
     - **RF-proof case** (is this necessary?)
     - **Arduino** or Raspberry Pi
     - **[Driver electronics](/design/driving-and-wattage.md)**
+        - AD9833
+        - Coupling capacitor
+        - Amplifier
 - **"Pointer" handheld**
     - **Housing (water-proof)**
     - **Angled back panel**, to reflect any waves that end up making it through backing away orthogonally
@@ -37,7 +40,8 @@ Here are the components, roughly listed from back to front:
 - AD9833: $12
 - Coupling capacitor: ??
 - RF amplifier: $300
-- Housing: ??
+- RF box for housing Driver: ??
+- 3d-printed housing for Pointer: ??
 - Backing: ??
 - PZT-5H: $25
 - Lens: $25
