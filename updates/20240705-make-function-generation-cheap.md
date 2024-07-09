@@ -31,36 +31,85 @@ Now, we want to convert this into a proper, bipolar signal. What we can do is us
 
 The value of the capacitor should be *at least* 1 µF, in order to support the coupling of a 500khz signal. This we can calculate with the cutoff frequency formula:
 
-\[ f_c = \frac{1}{2\pi RC} \]
+fc = 1 / (2 * π * R * C)
 
 Where:
-- \( f_c \) is the cutoff frequency (which should be 1/10th of the desired signal frequency, 500khz, to not cutoff the actual signal)
-- \( R \) is the load impedance,
-- \( C \) is the capacitance.
+- fc is the cutoff frequency (which should be 1/10th of the desired signal frequency, 500khz, to not cutoff the actual signal)
+- R is the load impedance,
+- C is the capacitance.
 
-Which we can solve for \( C \):
+Which we can solve for C:
 
-\[ C = \frac{1}{2\pi R f_c} \]
+C = 1 / (2 * π * R * fc)
 
-Which gives us
+If **R = 50 (standard impedence)**, then:
 
-C = 1/(2*pi*R*50khz)
+C = 1 / (2 * π * 50Ω * 50khz)
 
-C = 1/(314000*R)
+C = 6.36619772e-8
 
-Let's assume R = 50 (standard impedence)
+C = 64 nF
 
-C = 1/(314000*50)
+<u>So we need a 64 nF capacitor.</u>
 
-C = 0.0636942675 µF
+However, if **R = 0.7 MΩ** (as is the case in THS3091 amp), it becomes:
 
-So we simply need a 0.0636942675 µF (64 nF) capacitor.
+C = 1 / (2 * π * 0.7MΩ * 50khz)
 
-Increasing the capacitor *decreases* the minimum cutoff frequency.
+C = 4.5472841e-12 F
+
+C = 4.5 pF
+
+<u>So a 4.5 pF capacitor would be more appropriate.</u>
+
+Increasing the capacitor *decreases* the minimum cutoff frequency, so I think most small-ish capacitors are "small enough" to block DC, actually.
 
 Here's a [link to browse 0.056uF-0.068uF](https://eu.mouser.com/c/rf-wireless/rf-capacitors/?capacitance=0.056%20uF~~0.068%20uF&rp=rf-wireless%2Frf-capacitors%7C~Capacitance)
 
-### Amplifier
+### Op-amp circuit
+
+May be a cheaper alternative to the amplifier below.
+
+Need an op-amp capable of handling 500khz (meaning high slew rate), needs high voltage (around 30V will give 5W, current permitting), and needs high current (at least 166mA, to do 5W at 30V).
+
+I quite like: [THS3091](https://www.ti.com/product/THS3091)
+
+I think we can expect the gain to be 610 V/V, because the GBWP (gain bandwidth product) is 305 MHz, and we're at 500khz:
+
+305 MHz / 500 kHz = 610
+
+Let's assume we'll get about -15 V to +15 V output, since power supply is 32 V.
+
+If we max out the AD9833, we'll get about -300mV to 300mV (post coupling capacitor). If we put it to it's minimum, I believe we'll get about 5% of that, meaning -15mV to 15mV (5%, because we need ~50 power levels out of the 2^10 possible ones, since we have 50 samples. Will probably need more in practice, bc sine waves aren't linear, but around there should be okay).
+
+Let's choose the -300mV to 300mV configuration. This means we need 50 V/V to get to +15V. This means we need the following resistors in a non-inverting configuration:
+
+1. **Feedback Resistor (Rf):** This resistor will be placed between the output of the op-amp and the inverting input.
+2. **Input Resistor (Rin):** This resistor will be placed between the inverting input and the ground.
+
+Because:
+
+gain = 1 + Rf/Rin
+
+For a gain of 50 V/V:
+
+50 = 1 + Rf/Rin
+
+Rf/Rin = 49
+
+Rf = 49 * Rin
+
+So, if you choose Rin = 1kΩ
+
+Rf = 49 * 1kΩ = 49kΩ
+
+Therefore, you can use a 1 kΩ resistor for Rin and a 49 kΩ resistor for Rf to achieve the desired gain of 50 V/V.
+
+This configuration should provide the required amplification to achieve a peak output of ±15V from the input signal of ±300mV, enabling the generation of a higher voltage sine wave signal suitable for your application.
+
+We might wanna get a 40kΩ resistor for Rin, to get a bit less gain, in case 50 results in clipping.
+
+### Other (EXPENSIVE) Amplifier circuit idea
 
 Without amplification, we have about 0.032 W (according to [ChatGPT](#appendix-pre-amplification-wattage)).
 
