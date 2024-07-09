@@ -109,6 +109,57 @@ This configuration should provide the required amplification to achieve a peak o
 
 We might wanna get a 40kΩ resistor for Rin, to get a bit less gain, in case 50 results in clipping.
 
+###### Impedence matching
+
+Before the op-amp, I do not believe impedence matching is necessary, because the op-amp has such high input impedance that no current will flow.
+
+After the op-amp, you have the following:
+- [Op-amp output impedance](https://www.ti.com/lit/ds/symlink/ths3091.pdf): 0.06 Ω
+- PZT-5H disc: 1.9 Ω
+
+ChatGPT seems to be very confident that this won't be a problem, because:
+- Low impedences overall, and the source is lower than the load (good).
+- It's a small circuit, and a 500khz signal is a 600 meter wavelength, won't have reflections.
+
+However, at 1.9 Ω, the PZT will draw > 5A, which is way to high. The op-amp is rated for 310mA.
+
+###### Transformation
+
+**Source (THS3091, op-amp):**
+
+Voltage (peak): 15V
+Voltage (rms): V_peak / sqrt(2) = 10.6V
+Max current: 310mA
+Max current (rms): I_peak / sqrt(2) = 219mA
+Max power: 10.6V * 219mA = 2.32W
+
+**Load (PZT-5H disc):**
+
+Impedence: 1.9Ω
+
+This means, to get it to draw 2.32W, the voltage must be:
+
+V = sqrt(P * R)
+V = sqrt(2.32W * 1.9Ω)
+V = 2.09V
+
+We can double check:
+
+I = 2.09V / 1.9 = 1.1A
+W = 1.1A * 2.09V = 2.299W
+
+**Transformer:**
+
+Since the load needs 2.09V, and the source gives 15V, we need a step-down ratio of:
+
+15V / 2.09V = 7.35
+
+Which is <u>7.35 : 1</u> or <u>1 : 0.14</u> depending on how you look.
+
+Sourcing a transformer seems hard, but this website has some interesting search tools: https://www.coilcraft.com/en-us/products/transformers/
+
+(Note to self: I can't for the life of me find a good tranformer, but I can find 0.25W transformers, so could probably just put in parallel)
+
 ### Other (EXPENSIVE) Amplifier circuit idea
 
 Without amplification, we have about 0.032 W (according to [ChatGPT](#appendix-pre-amplification-wattage)).
