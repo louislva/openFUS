@@ -9,6 +9,7 @@ So if you want a 500khz element:
 - You can then divide by 2 to get the thickness (~4mm)
 
 STEMINC is a reputable site, which sells PZT-5H discs (with no minimum order quantity): [30x4.2mm disc](https://www.steminc.com/PZT/en/pzt-ceramic-disc-30x42mm-s-500-khz)
+- Their material is called SM411, but it's equivalent to PZT-5H.
 
 ### Why 500khz?
 
