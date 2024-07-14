@@ -172,61 +172,6 @@ Sourcing a transformer seems hard, but this website has some interesting search 
 
 (Note to self: I can't for the life of me find a good tranformer, but I can find 0.25W transformers, so could probably just put in parallel)
 
-### Other (EXPENSIVE) Amplifier circuit idea
-
-Without amplification, we have about 0.032 W (according to [ChatGPT](#appendix-pre-amplification-wattage)).
-
-Back of the envelope says we need up to 5W (since FDA safety limit is 720mW/cm2, and our surface area is about 7cm2).
-
-Going from 0.032 W to 5W is a 20 dB gain.
-
-[This link searches for RF amplifiers that give > 20dB of gain, and work for 500khz](https://eu.mouser.com/c/semiconductors/wireless-rf-semiconductors/wireless-rf-integrated-circuits/rf-amplifier/?gain=20%20dB~~38%20dB&operating%20frequency=0%20Hz%20to%201%20GHz~~500%20kHz%20to%204%20GHz&rp=semiconductors%2Fwireless-rf-semiconductors%2Fwireless-rf-integrated-circuits%2Frf-amplifier%7C~Operating%20Frequency%7C~Gain)
-
-You should [sort by max current](https://eu.mouser.com/c/semiconductors/wireless-rf-semiconductors/wireless-rf-integrated-circuits/rf-amplifier/?gain=20%20dB~~38%20dB&operating%20frequency=0%20Hz%20to%201%20GHz~~500%20kHz%20to%204%20GHz&rp=semiconductors%2Fwireless-rf-semiconductors%2Fwireless-rf-integrated-circuits%2Frf-amplifier%7C~Operating%20Frequency%7C~Gain&sort=operating%20supply%20current%7C1) however, because most of these are not capable of doing 5W, even if the gain is 20dB.
-
-The strongest RF amplifier seems to be [this guy](https://eu.mouser.com/datasheet/2/1030/ZHL_6A_2b-3368481.pdf), which does 24 V * 350 mA = 8.4 W.
-
-However, it also surges when turned on; TODO: surge protection (this might be fine? only thing after it is PZT)
-
 ### (Maybe: Isolator)
 
 It might be a problem for the Amp & AD9833 that waves come back from reflections. Let's just test this emperically, these components are cheap. If it's a problem, we need an isolator.
-
-# Appendix: Pre-amplification Wattage
-
-**Me:**
-```
-I have a -0.35V to 0.35V sine wave at 500khz
-
-The load is a PZT disc, with an impedence of < 1.9 ohms
-
-What is the wattage?
-```
-
-**ChatGPT:**
-```
-To calculate the wattage, we need to determine the power delivered to the load. Here's how we can calculate it:
-
-1. **Amplitude of the sine wave (V_peak)**: The peak voltage of the sine wave is 0.35V.
-2. **Impedance of the load (Z)**: The impedance is 1.9 ohms.
-
-The formula to calculate the power delivered to a load in an AC circuit is:
-\[ P = \frac{V_{rms}^2}{Z} \]
-
-Where:
-- \( V_{rms} \) is the root mean square (RMS) voltage.
-- \( Z \) is the impedance of the load.
-
-For a sine wave, the RMS voltage is given by:
-\[ V_{rms} = \frac{V_{peak}}{\sqrt{2}} \]
-
-Let's calculate it step by step.
-
-1. Calculate the RMS voltage:
-\[ V_{rms} = \frac{0.35V}{\sqrt{2}} \approx 0.247V \]
-
-2. Calculate the power using the RMS voltage and the impedance:
-\[ P = \frac{(0.247V)^2}{1.9 \, \Omega} \approx \frac{0.061 \, V^2}{1.9 \, \Omega} \approx 0.032W \]
-
-So, the wattage delivered to the PZT disc is approximately **0.032 watts**.
-```
