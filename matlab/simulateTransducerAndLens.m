@@ -136,8 +136,8 @@ medium.density = WATER_DENSITY * ones(Nx, Ny, Nz);      % [kg/m^3]
 % Transducer
 % medium.sound_speed = invertVoxels(transducer) .* medium.sound_speed + transducer .* PZT_SPEED;
 % medium.density = invertVoxels(transducer) .* medium.density + transducer .* PZT_DENSITY;
-% source.p_mask = transducer;
-% annotation.mask = annotation.mask + transducer;
+source.p_mask = transducer;
+annotation.mask = annotation.mask + transducer;
 
 % Silver epoxy
 medium.sound_speed = invertVoxels(silverEpoxy) .* medium.sound_speed + silverEpoxy .* SE_SPEED;
