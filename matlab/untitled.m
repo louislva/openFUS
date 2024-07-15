@@ -24,7 +24,7 @@ function lensVoxels = createLens(diameter, radius, padding)
     lensVoxels = createLensExplicit(diameter, ceil(depth), radius, padding + 1);
 end
 
-function bigVoxels = makeBig(width, height, depth, objectVoxels)
+function bigVoxels = makeBig(width, height, depth, objectVoxels, x, y, z)
     bigVoxels = zeros(width, height, depth);
     [objWidth, objHeight, objDepth] = size(objectVoxels);
     
@@ -32,6 +32,16 @@ function bigVoxels = makeBig(width, height, depth, objectVoxels)
     startX = floor((width - objWidth) / 2) + 1;
     startY = floor((height - objHeight) / 2) + 1;
     startZ = floor((depth - objDepth) / 2) + 1;
+    
+    if x ~= 0
+        startX = x;
+    end
+    if y ~= 0
+        startY = y;
+    end
+    if z ~= 0
+        startZ = z;
+    end
     
     % Place objectVoxels in the center of bigVoxels
     bigVoxels(startX:startX+objWidth-1, startY:startY+objHeight-1, startZ:startZ+objDepth-1) = objectVoxels;
@@ -91,6 +101,21 @@ kgrid.t_array = (0:Nt-1) * dt; % time array
 fprintf('Time step (dt): %e seconds\n', dt);
 fprintf('Total time: %e seconds\n', kgrid.t_array(end));
 
+% Objects
+
+% Source, PZT
+S_x = 50;
+S_radius = mmToVoxelLength(30 / 2);
+S_depth = mmToVoxelLength(4.2);
+S_z = 1;
+
+S_x0 = floor(S_x - S_radius);
+S_x1 = ceil(S_x + S_radius);
+S_z0 = S_z;
+S_z1 = ceil(S_z + S_depth);
+
+% Lens, PP
+L_z = S_z1;
 
 annotation.mask = zeros(Nx, Ny, Nz);
 
@@ -102,7 +127,7 @@ medium.density = WATER_DENSITY * ones(Nx, Ny, Nz);      % [kg/m^3]
 lensDiameter = mmToVoxelLength(30);
 lensRadius = mmToVoxelLength(22.84);
 lensPadding = mmToVoxelLength(1);
-lens = makeBig(Nx, Ny, Nz, createLens(lensDiameter, lensRadius, lensPadding));
+lens = makeBig(Nx, Ny, Nz, createLens(lensDiameter, lensRadius, lensPadding), 0, 0, L_z + 1);
 
 annotation.mask = annotation.mask + lens;
 
@@ -114,9 +139,6 @@ annotation.mask = annotation.mask + lens;
 medium.sound_speed = invertVoxels(lens) * WATER_SPEED + lens * PP_SPEED;
 medium.density = invertVoxels(lens) * WATER_DENSITY + lens * PP_DENSITY;
 
-Sa = floor(60 / speed_multiplier);
-Sb = floor(70 / speed_multiplier);
-
 % Define a time-varying sinusoidal source
 source_freq = 500000; % 1 MHz
 source_mag = 1; % magnitude of the source
@@ -125,10 +147,11 @@ source.p = source_mag * sin(2 * pi * source_freq * t_array);
 
 % Define source location
 source.p_mask = zeros(Nx, Ny, Nz);
-source.p_mask(Sa:Sb, Sa:Sb, Sa:Sb) = 1; % example of a cubic source region
+source.p_mask(S_x0:S_x1, S_x0:S_x1, S_z0:S_z1) = 1;
+annotation.mask(S_x0:S_x1, S_x0:S_x1, S_z0:S_z1) = 1;
 
 sensor.mask = zeros(Nx, Ny, Nz);
-sensor.mask(Sa, Sa, Sa) = 1; % example of a single point sensor
+sensor.mask(1, 1, 1) = 1; % example of a single point sensor
 
 input_args = {'DisplayMask', annotation.mask};
 sensor_data = kspaceFirstOrder3D(kgrid, medium, source, sensor, input_args{:});
