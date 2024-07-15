@@ -134,6 +134,7 @@ medium.sound_speed = WATER_SPEED * ones(Nx, Ny, Nz);  % [m/s]
 medium.density = WATER_DENSITY * ones(Nx, Ny, Nz);      % [kg/m^3]
 
 % Transducer
+% FLOATING POINT ERROR WHEN YOU ADD MEDIUM DENSITY OF PZT !!! TO DO : FIX!!
 % medium.sound_speed = invertVoxels(transducer) .* medium.sound_speed + transducer .* PZT_SPEED;
 % medium.density = invertVoxels(transducer) .* medium.density + transducer .* PZT_DENSITY;
 source.p_mask = transducer;
