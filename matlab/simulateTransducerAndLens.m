@@ -87,7 +87,7 @@ kgrid = makeGrid(Nx, dx, Ny, dy, Nz, dz);
 % Define the time array for the kgrid
 % Courant-Friedrichs-Lewy (CFL) condition for stability
 d = 3; % number of spatial dimensions
-dt = dx / (c_max * sqrt(d)); % time step [s]
+dt = dx / (c_max * 2 * sqrt(d)); % time step [s]
 
 Nt = 512; % number of time steps
 kgrid.t_array = (0:Nt-1) * dt; % time array
@@ -135,14 +135,15 @@ medium.density = WATER_DENSITY * ones(Nx, Ny, Nz);      % [kg/m^3]
 
 % Transducer
 % FLOATING POINT ERROR WHEN YOU ADD MEDIUM DENSITY OF PZT !!! TO DO : FIX!!
-% medium.sound_speed = invertVoxels(transducer) .* medium.sound_speed + transducer .* PZT_SPEED;
-% medium.density = invertVoxels(transducer) .* medium.density + transducer .* PZT_DENSITY;
-source.p_mask = transducer;
+medium.sound_speed = invertVoxels(transducer) .* medium.sound_speed + transducer .* PZT_SPEED;
+medium.density = invertVoxels(transducer) .* medium.density + transducer .* PZT_DENSITY;
 annotation.mask = annotation.mask + transducer;
+source.p_mask = transducer;
 
 % Silver epoxy
 medium.sound_speed = invertVoxels(silverEpoxy) .* medium.sound_speed + silverEpoxy .* SE_SPEED;
 medium.density = invertVoxels(silverEpoxy) .* medium.density + silverEpoxy .* SE_DENSITY;
+annotation.mask = annotation.mask + silverEpoxy;
 
 % Lens
 medium.sound_speed = invertVoxels(lens) .* medium.sound_speed + lens .* PP_SPEED;
@@ -162,13 +163,15 @@ t_array = kgrid.t_array; % time array from the kgrid
 source.p = source_mag * sin(2 * pi * source_freq * t_array);
 
 sensor.mask = zeros(Nx, Ny, Nz);
-sensor.mask(1, 1, 1) = 1; % example of a single point sensor
+sensor.mask(50, 50, 50) = 1; % example of a single point sensor
 
 input_args = {'DisplayMask', annotation.mask};
 sensor_data = kspaceFirstOrder3D(kgrid, medium, source, sensor, input_args{:});
-% Add the rectangle overlay to the existing figure
-imagesc(kgrid.y_vec, kgrid.x_vec, squeeze(sensor_data(:, :, floor(Nz/2))));
-xlabel('y [m]');
-ylabel('x [m]');
-title('Recorded Pressure');
+
+% Display sensor data
+figure;
+imagesc(sensor_data);
 colorbar;
+title('Sensor Data');
+xlabel('X-axis');
+ylabel('Y-axis');
