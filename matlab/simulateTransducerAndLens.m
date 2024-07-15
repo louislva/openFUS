@@ -19,7 +19,7 @@ function lensVoxels = createLensExplicit(diameter, depth, radius, padding)
 end
 
 function lensVoxels = createLens(diameter, radius, padding)
-    depth = sqrt(radius^2 - (diameter / 2)^2) + padding;
+    depth = (1 - sin(acos((diameter / 2) / radius))) * radius;
     lensVoxels = createLensExplicit(diameter, ceil(depth), radius, padding + 1);
 end
 
@@ -108,8 +108,8 @@ T_x1 = ceil(T_x0 + T_radius * 2);
 S_depth = mmToVoxelLength(4.2);
 S_z0 = 1;
 S_z1 = ceil(S_z0 + S_depth);
-transducerRaw = createCylinder(T_radius * 2, ceil(S_depth));
-transducer = makeBig(Nx, Ny, Nz, transducerRaw, 0, 0, S_z0);
+pztRaw = createCylinder(T_radius * 2, ceil(S_depth));
+pzt = makeBig(Nx, Ny, Nz, pztRaw, 0, 0, S_z0);
 
 % Silver Epoxy
 E_depth = round(mmToVoxelLength((SE_SPEED / 500000 / 4) * 1000));
@@ -135,10 +135,10 @@ medium.sound_speed = WATER_SPEED * ones(Nx, Ny, Nz);  % [m/s]
 medium.density = WATER_DENSITY * ones(Nx, Ny, Nz);      % [kg/m^3]
 
 % Transducer / Source
-medium.sound_speed = invertVoxels(transducer) .* medium.sound_speed + transducer .* PZT_SPEED;
-medium.density = invertVoxels(transducer) .* medium.density + transducer .* PZT_DENSITY;
-annotation.mask = annotation.mask + transducer;
-source.p_mask = transducer;
+medium.sound_speed = invertVoxels(pzt) .* medium.sound_speed + pzt .* PZT_SPEED;
+medium.density = invertVoxels(pzt) .* medium.density + pzt .* PZT_DENSITY;
+annotation.mask = annotation.mask + pzt;
+source.p_mask = pzt;
 
 % Actual sine waves from source
 source_freq = 500000; % 500 kHz
@@ -158,7 +158,7 @@ annotation.mask = annotation.mask + lens;
 
 % Sensors
 sensor.mask = zeros(Nx, Ny, Nz);
-S_start = 15;
+S_start = L_z1;
 sensor.mask(center, center, S_start:Nz) = 1; % example of a single point sensor
 annotation.mask = annotation.mask + sensor.mask;
 
@@ -181,7 +181,7 @@ addlistener(ax, 'YLim', 'PostSet', @(src, event) updateYTickLabels(ax, S_start))
 function updateYTickLabels(ax, S_start)
     global grid_size;
     yticks = get(ax, 'YTick');
-    yticks = yticks + S_start;
+    % yticks = yticks + S_start;
     yticks = yticks * grid_size * 1000;
     set(ax, 'YTickLabel', yticks);
 end
