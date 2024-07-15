@@ -25,13 +25,15 @@ speed_multiplier = 1;
 
 Nx = 128;   % number of grid points in the x direction
 Ny = 128;   % number of grid points in the y direction
+Nz = 128;   % number of grid points in the z direction
 dx = grid_size * speed_multiplier;   % grid point spacing in the x direction [m]
 dy = grid_size * speed_multiplier;   % grid point spacing in the y direction [m]
-kgrid = makeGrid(Nx, dx, Ny, dy);
+dz = grid_size * speed_multiplier;   % grid point spacing in the z direction [m]
+kgrid = makeGrid(Nx, dx, Ny, dy, Nz, dz);
 
 % Define the time array for the kgrid
 % Courant-Friedrichs-Lewy (CFL) condition for stability
-d = 2; % number of spatial dimensions
+d = 3; % number of spatial dimensions
 dt = dx / (c_max * sqrt(d)); % time step [s]
 
 Nt = 512; % number of time steps
@@ -41,19 +43,20 @@ fprintf('Time step (dt): %e seconds\n', dt);
 fprintf('Total time: %e seconds\n', kgrid.t_array(end));
 
 
-annotation.mask = zeros(Nx, Ny);
+annotation.mask = zeros(Nx, Ny, Nz);
 
 % Define the properties of the first material
-medium.sound_speed = WATER_SPEED * ones(Nx, Ny);  % [m/s]
-medium.density = WATER_DENSITY * ones(Nx, Ny);      % [kg/m^3]
+medium.sound_speed = WATER_SPEED * ones(Nx, Ny, Nz);  % [m/s]
+medium.density = WATER_DENSITY * ones(Nx, Ny, Nz);      % [kg/m^3]
 
 % Define the region for the lens
 region_x = floor(30 / speed_multiplier):floor(50 / speed_multiplier);
 region_y = floor(30 / speed_multiplier):floor(50 / speed_multiplier);
-annotation.mask(region_x, region_y) = 1;
+region_z = floor(30 / speed_multiplier):floor(50 / speed_multiplier);
+annotation.mask(region_x, region_y, region_z) = 1;
 
-medium.sound_speed(region_x, region_y) = PP_SPEED;
-medium.density(region_x, region_y) = PP_DENSITY;
+medium.sound_speed(region_x, region_y, region_z) = PP_SPEED;
+medium.density(region_x, region_y, region_z) = PP_DENSITY;
 
 Sa = floor(60 / speed_multiplier);
 Sb = floor(70 / speed_multiplier);
@@ -65,16 +68,16 @@ t_array = kgrid.t_array; % time array from the kgrid
 source.p = source_mag * sin(2 * pi * source_freq * t_array);
 
 % Define source location
-source.p_mask = zeros(Nx, Ny);
-source.p_mask(Sa:Sb, Sa:Sb) = 1; % example of a square source region
+source.p_mask = zeros(Nx, Ny, Nz);
+source.p_mask(Sa:Sb, Sa:Sb, Sa:Sb) = 1; % example of a cubic source region
 
-sensor.mask = zeros(Nx, Ny);
-sensor.mask(Sa, Sa) = 1; % example of a single point sensor
+sensor.mask = zeros(Nx, Ny, Nz);
+sensor.mask(Sa, Sa, Sa) = 1; % example of a single point sensor
 
 input_args = {'DisplayMask', annotation.mask};
-sensor_data = kspaceFirstOrder2D(kgrid, medium, source, sensor, input_args{:});
+sensor_data = kspaceFirstOrder3D(kgrid, medium, source, sensor, input_args{:});
 % Add the rectangle overlay to the existing figure
-imagesc(kgrid.y_vec, kgrid.x_vec, sensor_data);
+imagesc(kgrid.y_vec, kgrid.x_vec, squeeze(sensor_data(:, :, floor(Nz/2))));
 xlabel('y [m]');
 ylabel('x [m]');
 title('Recorded Pressure');
