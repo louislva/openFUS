@@ -14,15 +14,32 @@ PP_DENSITY = 920;
 SE_SPEED = 2548;
 SE_DENSITY = 3222;
 
+c_min = WATER_SPEED;
+c_max = PZT_SPEED;
+f_max = 500000;
+min_wave_length = c_min / f_max;
+grid_size = min_wave_length / 4;
+
 % Simulation
+speed_multiplier = 1;
 
-speed_multiplier = 0.25;
-
-Nx = floor(128 / speed_multiplier);   % number of grid points in the x direction
-Ny = floor(128 / speed_multiplier);   % number of grid points in the y direction
-dx = 0.1 * speed_multiplier;   % grid point spacing in the x direction [m]
-dy = 0.1 * speed_multiplier;   % grid point spacing in the y direction [m]
+Nx = 128;   % number of grid points in the x direction
+Ny = 128;   % number of grid points in the y direction
+dx = grid_size * speed_multiplier;   % grid point spacing in the x direction [m]
+dy = grid_size * speed_multiplier;   % grid point spacing in the y direction [m]
 kgrid = makeGrid(Nx, dx, Ny, dy);
+
+% Define the time array for the kgrid
+% Courant-Friedrichs-Lewy (CFL) condition for stability
+d = 2; % number of spatial dimensions
+dt = dx / (c_max * sqrt(d)); % time step [s]
+
+Nt = 512; % number of time steps
+kgrid.t_array = (0:Nt-1) * dt; % time array
+
+fprintf('Time step (dt): %e seconds\n', dt);
+fprintf('Total time: %e seconds\n', kgrid.t_array(end));
+
 
 annotation.mask = zeros(Nx, Ny);
 
@@ -40,8 +57,16 @@ medium.density(region_x, region_y) = PP_DENSITY;
 
 Sa = floor(60 / speed_multiplier);
 Sb = floor(70 / speed_multiplier);
-source.p0 = zeros(Nx, Ny);
-source.p0(Sa:Sb, Sa:Sb) = 1; % example of a square source
+
+% Define a time-varying sinusoidal source
+source_freq = 500000; % 1 MHz
+source_mag = 1; % magnitude of the source
+t_array = kgrid.t_array; % time array from the kgrid
+source.p = source_mag * sin(2 * pi * source_freq * t_array);
+
+% Define source location
+source.p_mask = zeros(Nx, Ny);
+source.p_mask(Sa:Sb, Sa:Sb) = 1; % example of a square source region
 
 sensor.mask = zeros(Nx, Ny);
 sensor.mask(Sa, Sa) = 1; % example of a single point sensor
@@ -49,9 +74,6 @@ sensor.mask(Sa, Sa) = 1; % example of a single point sensor
 input_args = {'DisplayMask', annotation.mask};
 sensor_data = kspaceFirstOrder2D(kgrid, medium, source, sensor, input_args{:});
 % Add the rectangle overlay to the existing figure
-hold on;
-rectangle('Position', [region_y(1), region_x(1), length(region_y), length(region_x)], 'EdgeColor', 'r', 'LineWidth', 2);
-
 imagesc(kgrid.y_vec, kgrid.x_vec, sensor_data);
 xlabel('y [m]');
 ylabel('x [m]');
