@@ -28,9 +28,9 @@ function bigVoxels = makeBig(width, height, depth, objectVoxels, x, y, z)
     [objWidth, objHeight, objDepth] = size(objectVoxels);
     
     % Calculate the starting indices to place objectVoxels centrally
-    startX = floor((width - objWidth) / 2) + 1;
-    startY = floor((height - objHeight) / 2) + 1;
-    startZ = floor((depth - objDepth) / 2) + 1;
+    startX = ceil((width - objWidth) / 2) + 1;
+    startY = ceil((height - objHeight) / 2) + 1;
+    startZ = ceil((depth - objDepth) / 2) + 1;
     
     if x ~= 0
         startX = x;
@@ -78,7 +78,7 @@ end
 
 Nx = 75;   % number of grid points in the x direction
 Ny = 75;   % number of grid points in the y direction
-Nz = 150;   % number of grid points in the z direction
+Nz = 100;   % number of grid points in the z direction
 dx = grid_size;   % grid point spacing in the x direction [m]
 dy = grid_size;   % grid point spacing in the y direction [m]
 dz = grid_size;   % grid point spacing in the z direction [m]
@@ -101,8 +101,8 @@ center = ceil(Nx / 2);
 % General transducer thing
 T_x = center;
 T_radius = mmToVoxelLength(30 / 2);
-T_x0 = floor(T_x - T_radius);
-T_x1 = ceil(T_x + T_radius);
+T_x0 = ceil(T_x - T_radius);
+T_x1 = ceil(T_x0 + T_radius * 2);
 
 % Source, PZT
 S_depth = mmToVoxelLength(4.2);
@@ -158,7 +158,7 @@ annotation.mask = annotation.mask + lens;
 
 % Sensors
 sensor.mask = zeros(Nx, Ny, Nz);
-S_start = 1;
+S_start = 15;
 sensor.mask(center, center, S_start:Nz) = 1; % example of a single point sensor
 annotation.mask = annotation.mask + sensor.mask;
 
@@ -174,7 +174,16 @@ title('Sensor Data (Max Over Time)');
 xlabel('...');
 ylabel('mm');
 
-% Modify y-axis labels
-yticks = get(gca, 'YTick');
-yticklabels = (yticks + S_start) / mmToVoxelLength(1);
-set(gca, 'YTickLabel', yticklabels);
+% Modify y-axis labels dynamically
+ax = gca;
+addlistener(ax, 'YLim', 'PostSet', @(src, event) updateYTickLabels(ax, S_start));
+
+function updateYTickLabels(ax, S_start)
+    global grid_size;
+    yticks = get(ax, 'YTick');
+    yticks = yticks + S_start;
+    yticks = yticks * grid_size * 1000;
+    set(ax, 'YTickLabel', yticks);
+end
+
+updateYTickLabels(ax, S_start);
