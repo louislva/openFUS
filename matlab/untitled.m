@@ -1,3 +1,21 @@
+% Constants
+
+WATER_SPEED = 1500;
+WATER_DENSITY = 1000;
+
+PZT_SPEED = 4000;
+PZT_DENSITY = 7800; % (source: https://www.steminc.com/piezo/PZ_property.asp)
+
+% Lens material, polypropylene
+PP_SPEED = 2565;
+PP_DENSITY = 920;
+
+% Silver epoxy
+SE_SPEED = 2548;
+SE_DENSITY = 3222;
+
+% Simulation
+
 speed_multiplier = 0.25;
 
 Nx = floor(128 / speed_multiplier);   % number of grid points in the x direction
@@ -9,20 +27,16 @@ kgrid = makeGrid(Nx, dx, Ny, dy);
 annotation.mask = zeros(Nx, Ny);
 
 % Define the properties of the first material
-medium.sound_speed = 1500 * ones(Nx, Ny);  % [m/s]
-medium.density = 1000 * ones(Nx, Ny);      % [kg/m^3]
+medium.sound_speed = WATER_SPEED * ones(Nx, Ny);  % [m/s]
+medium.density = WATER_DENSITY * ones(Nx, Ny);      % [kg/m^3]
 
-% Define the properties of the second material
-second_material_speed = 2000;  % [m/s]
-second_material_density = 1200; % [kg/m^3]
-
-% Define the region for the second material
+% Define the region for the lens
 region_x = floor(30 / speed_multiplier):floor(50 / speed_multiplier);
 region_y = floor(30 / speed_multiplier):floor(50 / speed_multiplier);
 annotation.mask(region_x, region_y) = 1;
 
-medium.sound_speed(region_x, region_y) = second_material_speed;
-medium.density(region_x, region_y) = second_material_density;
+medium.sound_speed(region_x, region_y) = PP_SPEED;
+medium.density(region_x, region_y) = PP_DENSITY;
 
 Sa = floor(60 / speed_multiplier);
 Sb = floor(70 / speed_multiplier);
