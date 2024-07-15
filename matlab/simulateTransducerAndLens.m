@@ -89,7 +89,7 @@ kgrid = makeGrid(Nx, dx, Ny, dy, Nz, dz);
 d = 3; % number of spatial dimensions
 dt = dx / (c_max * 2 * sqrt(d)); % time step [s]
 
-Nt = ceil(512 * (Nz / 50)); % number of time steps
+Nt = ceil(512 * 1 * (Nz / 50)); % number of time steps
 kgrid.t_array = (0:Nt-1) * dt; % time array
 
 fprintf('Time step (dt): %e seconds\n', dt);
@@ -134,12 +134,17 @@ annotation.mask = zeros(Nx, Ny, Nz);
 medium.sound_speed = WATER_SPEED * ones(Nx, Ny, Nz);  % [m/s]
 medium.density = WATER_DENSITY * ones(Nx, Ny, Nz);      % [kg/m^3]
 
-% Transducer
-% FLOATING POINT ERROR WHEN YOU ADD MEDIUM DENSITY OF PZT !!! TO DO : FIX!!
+% Transducer / Source
 medium.sound_speed = invertVoxels(transducer) .* medium.sound_speed + transducer .* PZT_SPEED;
 medium.density = invertVoxels(transducer) .* medium.density + transducer .* PZT_DENSITY;
 annotation.mask = annotation.mask + transducer;
 source.p_mask = transducer;
+
+% Actual sine waves from source
+source_freq = 500000; % 500 kHz
+source_mag = 1; % magnitude of the source
+t_array = kgrid.t_array; % time array from the kgrid
+source.p = source_mag * sin(2 * pi * source_freq * t_array);
 
 % Silver epoxy
 medium.sound_speed = invertVoxels(silverEpoxy) .* medium.sound_speed + silverEpoxy .* SE_SPEED;
@@ -151,20 +156,10 @@ medium.sound_speed = invertVoxels(lens) .* medium.sound_speed + lens .* PP_SPEED
 medium.density = invertVoxels(lens) .* medium.density + lens .* PP_DENSITY;
 annotation.mask = annotation.mask + lens;
 
-% region_x = floor((Nx - lensDiameter) / 2):floor((Nx + lensDiameter) / 2);
-% region_y = floor((Ny - lensDiameter) / 2):floor((Ny + lensDiameter) / 2);
-% region_z = floor((Nz - lensDiameter) / 2):floor((Nz + lensDiameter) / 2);
-% annotation.mask(region_x, region_y, region_z) = 1;
-
-
-% Define a time-varying sinusoidal source
-source_freq = 500000; % 500 kHz
-source_mag = 1; % magnitude of the source
-t_array = kgrid.t_array; % time array from the kgrid
-source.p = source_mag * sin(2 * pi * source_freq * t_array);
-
+% Sensors
 sensor.mask = zeros(Nx, Ny, Nz);
-sensor.mask(center, center, L_z1:Nz) = 1; % example of a single point sensor
+S_start = 1;
+sensor.mask(center, center, S_start:Nz) = 1; % example of a single point sensor
 annotation.mask = annotation.mask + sensor.mask;
 
 input_args = {'DisplayMask', annotation.mask};
@@ -176,5 +171,10 @@ figure;
 imagesc(squeeze(sensor_data_max));
 colorbar;
 title('Sensor Data (Max Over Time)');
-xlabel('X-axis');
-ylabel('Y-axis');
+xlabel('...');
+ylabel('mm');
+
+% Modify y-axis labels
+yticks = get(gca, 'YTick');
+yticklabels = (yticks + S_start) / mmToVoxelLength(1);
+set(gca, 'YTickLabel', yticklabels);
