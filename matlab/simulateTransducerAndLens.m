@@ -76,9 +76,9 @@ function voxelLength = mmToVoxelLength(mm)
     voxelLength = mm / (grid_size * 1000);
 end
 
-Nx = 100;   % number of grid points in the x direction
-Ny = 100;   % number of grid points in the y direction
-Nz = 100;   % number of grid points in the z direction
+Nx = 75;   % number of grid points in the x direction
+Ny = 75;   % number of grid points in the y direction
+Nz = 150;   % number of grid points in the z direction
 dx = grid_size;   % grid point spacing in the x direction [m]
 dy = grid_size;   % grid point spacing in the y direction [m]
 dz = grid_size;   % grid point spacing in the z direction [m]
@@ -89,7 +89,7 @@ kgrid = makeGrid(Nx, dx, Ny, dy, Nz, dz);
 d = 3; % number of spatial dimensions
 dt = dx / (c_max * 2 * sqrt(d)); % time step [s]
 
-Nt = 512; % number of time steps
+Nt = ceil(512 * (Nz / 50)); % number of time steps
 kgrid.t_array = (0:Nt-1) * dt; % time array
 
 fprintf('Time step (dt): %e seconds\n', dt);
@@ -97,8 +97,9 @@ fprintf('Total time: %e seconds\n', kgrid.t_array(end));
 
 % DEFINE OBJECTS
 
+center = ceil(Nx / 2);
 % General transducer thing
-T_x = 50;
+T_x = center;
 T_radius = mmToVoxelLength(30 / 2);
 T_x0 = floor(T_x - T_radius);
 T_x1 = ceil(T_x + T_radius);
@@ -163,15 +164,17 @@ t_array = kgrid.t_array; % time array from the kgrid
 source.p = source_mag * sin(2 * pi * source_freq * t_array);
 
 sensor.mask = zeros(Nx, Ny, Nz);
-sensor.mask(50, 50, 50) = 1; % example of a single point sensor
+sensor.mask(center, center, L_z1:Nz) = 1; % example of a single point sensor
+annotation.mask = annotation.mask + sensor.mask;
 
 input_args = {'DisplayMask', annotation.mask};
 sensor_data = kspaceFirstOrder3D(kgrid, medium, source, sensor, input_args{:});
+sensor_data_max = max(sensor_data, [], 2);
 
 % Display sensor data
 figure;
-imagesc(sensor_data);
+imagesc(squeeze(sensor_data_max));
 colorbar;
-title('Sensor Data');
+title('Sensor Data (Max Over Time)');
 xlabel('X-axis');
 ylabel('Y-axis');
