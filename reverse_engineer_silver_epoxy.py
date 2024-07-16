@@ -49,6 +49,7 @@ def report(name: str, density: float):
     
     speed_of_sound = calc_speed_of_sound(young_modulus, density)
     print(f"- Speed of sound: {speed_of_sound}")
+    print(f"- Density: {density}")
 
     impedance = calc_impedance(density, speed_of_sound)
     print(f"- Impedance: {impedance}")
