@@ -22,6 +22,8 @@ This is still very much in flux.
 - *Coaxial cable*
 - *RF proof enclosure*
 
+You can see a rough simulation in [driver-circuit.asc](/driver-circuit.asc) with LTSpice.
+
 ### Making it
 
 You will need soldering equipment, particularly for soldering AD9833 and THS3091 onto their respective breakout boards.
