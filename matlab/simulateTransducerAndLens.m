@@ -69,16 +69,16 @@ c_max = PZT_SPEED;
 f_max = 500000;
 min_wave_length = c_min / f_max;
 global grid_size;
-grid_size = min_wave_length / 4;
+grid_size = min_wave_length / 8;
 
 function voxelLength = mmToVoxelLength(mm)
     global grid_size;
     voxelLength = mm / (grid_size * 1000);
 end
 
-Nx = 75;   % number of grid points in the x direction
-Ny = 75;   % number of grid points in the y direction
-Nz = 100;   % number of grid points in the z direction
+Nx = 150;   % number of grid points in the x direction
+Ny = 150;   % number of grid points in the y direction
+Nz = 200;   % number of grid points in the z direction
 dx = grid_size;   % grid point spacing in the x direction [m]
 dy = grid_size;   % grid point spacing in the y direction [m]
 dz = grid_size;   % grid point spacing in the z direction [m]
@@ -122,7 +122,7 @@ E_z1 = ceil(E_z0 + E_depth);
 
 % Lens, PP
 lensDiameter = mmToVoxelLength(30);
-lensRadius = mmToVoxelLength(22.84);
+lensRadius = mmToVoxelLength(45.69);
 lensPadding = mmToVoxelLength(1);
 lensRaw = createLens(lensDiameter, lensRadius, lensPadding);
 L_z = E_z1 + 0;
