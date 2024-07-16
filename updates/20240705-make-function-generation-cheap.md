@@ -6,18 +6,6 @@ Previously was thinking something like use \~whatever function generator\~ you h
 
 If you already need amplification, there's no reason to use a function generator, instead of a cheap Signal Generator like the AD9833, paired with an amplifier + a microcontroller (for pulsing, safety limits, etc.)
 
-### Shopping list
-
-- [x] Breadboard kit
-- [ ] [AD9833](https://eu.mouser.com/ProductDetail/Analog-Devices/AD9833BRMZ-REEL7?qs=BpaRKvA4VqGlyZCX2gCZvQ%3D%3D)
-- [x] [100 nF capacitor](https://www.amazon.de/-/da/dp/B01LWWKAIB/) (Capacitor)
-- [ ] [THS3091](https://www.ti.com/product/THS3091) (Op-amp)
-- [ ] Circuit resistors
-    - [ ] [1kΩ resistors](https://eu.mouser.com/c/passive-components/resistors/?power%20rating=18.9%20mW~~-&resistance=1%20kOhms&termination%20style=Axial&tolerance=0.01%20%25~~3%20%25&rp=passive-components%2Fresistors%7C~Power%20Rating%7C~Tolerance) (unit resistance for op-amp circuit)
-    - [ ] [49kΩ resistors](https://eu.mouser.com/c/passive-components/resistors/?power%20rating=18.9%20mW~~-&resistance=47%20kOhms~~49.11%20kOhms&termination%20style=Axial&tolerance=0.01%20%25~~3%20%25&rp=passive-components%2Fresistors%7C~Power%20Rating%7C~Tolerance%7C~Resistance) (for exactly 50V/V gain)
-    - [ ] 40kΩ resistors (for slightly less gain, to prevent clipping)
-- [ ] [50Ω resistors](https://eu.mouser.com/c/passive-components/resistors/?power%20rating=18.9%20mW~~-&resistance=50%20Ohms&termination%20style=Axial&tolerance=0.01%20%25~~3%20%25&rp=passive-components%2Fresistors%7C~Power%20Rating%7C~Tolerance) (very standard, will nicely limit 15V = 0.3A)
-
 ### AD9833
 
 This generates positive-only sine waves, from a Raspberry Pi or Arduino.
