@@ -17,6 +17,8 @@ This is still very much in flux.
     - 49k ohm resistor in
     - 1k ohm resistor b
     - TODO: Power supply for THS3091 ???
+    - TODO: coupling capacitor on output
+    - TODO: decoupling capacitor on power supply
 - *Either: Send to PZT or have a 1.9 ohm resistor to mimic*
 - *For prototyping: convert to cables for oscilloscope (this should be easy, since most oscilloscopes have those clamp-thingies you could just apply to male-ended jumper)*
 - *Coaxial cable*

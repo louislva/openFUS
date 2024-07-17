@@ -17,15 +17,9 @@ Here are the components, roughly listed from back to front:
     - **Housing (water-proof)**
     - **Angled back panel**, to reflect any waves that end up making it through backing away orthogonally
     - **[Backing](/design/backing.md):** absorb waves that come out through the back, so they don't reflect and interfere in the forward direction
-        - Casting epoxy + tungsten powder: Has low impedence (not quite water, but close), and tungsten powder will reflect waves around, so they can be attenuated for a longer time, on a longer path
     - **Wires** that connect silver electrodes & the Driver
-    - **[Impedance matching (backing)](/design/impedance-matching.md):** Quarter-wave transformer
-        - Impedence needs to = sqrt(Z1 * Z2), where Z1 is the impedence of the backing, and Z2 is the impedence of the PZT-5H
-        - Then you spread a quarter-wavelength of it, which will match the impedence between the two elements, theoretically bringing the reflection to 0
-        - Manufacturing: ?? Ideally an epoxy, so it can be spread thin? Calculate how much weight needed for 1/4th wavelength for entire surface area, and put that amount on
     - **[PZT-5H disc](/design/piezoelectric-element.md):** raw transducer element
-    - **[Impedance matching (lens)](/design/impedance-matching.md):** Quarter-wave transformer
-        - Same trick, except now the impedence is between the PZT-5H and the lens
+    - **[Impedance matching (PZT to lens)](/design/impedance-matching.md):** Quarter-wave transformer
     - **[Lens](/design/lens.md):** concave lens, to focus the ultrasound waves
         - Material: Probably TPX/Polymethylpentene, which has almost same impedence as water/ultrasound gel/tissue
         - Shape: concave, since accoustic lenses are opposite of optical lenses (concave to focus, convex to diverge)
@@ -36,20 +30,22 @@ Here are the components, roughly listed from back to front:
 
 ## Bill of materials (priced for 10 units)
 
-- Arduino: $10
+- Arduino: $25
 - AD9833: $12
-- Coupling capacitor: ??
-- RF amplifier: $300
+- THS3091: $12
 - RF box for housing Driver: ??
 - 3d-printed housing for Pointer: ??
-- Backing: ??
+- Backing epoxy: ??
+- Backing tungsten: ??
 - PZT-5H: $25
 - Lens: $25
-- Silver epoxy: $100
+- Silver epoxy: $20
 - Ultrasound gel: $10
+- PCB: ??
+- Small electrical components (coupling capacitor, resistors, etc.): ??
 
-Known costs: $482
+Known costs: $129
 
-Guess at the rest: $200
+Guess at the rest: $250
 
 Guess at unknowns: $200

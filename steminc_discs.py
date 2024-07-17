@@ -678,8 +678,8 @@ def filter_elements(elements, min_freq: float, max_freq: float, min_width: float
     return [disc for disc in elements if disc["frequency"] >= min_freq and disc["frequency"] <= max_freq and disc["width"] >= min_width and disc["width"] <= max_width]
 
 def main():
-    print(filter_elements(DISCS, 400, 600, 40, 10000))
-    print(filter_elements(RINGS, 400, 600, 40, 10000))
+    print(filter_elements(DISCS, 490, 510, 30, 10000))
+    # print(filter_elements(RINGS, 400, 600, 30, 10000))
 
 if __name__ == "__main__":
     main()
