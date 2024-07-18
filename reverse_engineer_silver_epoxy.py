@@ -39,27 +39,35 @@ SILVER_DENSITY = 10.49 # g/cm^3
 def guess_silver_mix_by_density(density):
     return (density - EPOXY_DENSITY) / (SILVER_DENSITY - EPOXY_DENSITY)
 
-def report(name: str, density: float):
-    print("===", name, "===")
-    silver_mix = guess_silver_mix_by_density(density)
-    print(f"- Silver mix: {silver_mix:.2f}")
+class Properties:
+    def __init__(self, density: float, mixture: float, speed_of_sound: float, impedance: float):
+        self.density = density
+        self.mixture = mixture
+        self.speed_of_sound = speed_of_sound
+        self.impedance = impedance
 
-    young_modulus = mixture_linear_volume(SILVER_YOUNG_MODULUS, silver_mix, EPOXY_YOUNG_MODULUS, 1 - silver_mix)
-    # print(f"- Young modulus: {young_modulus}")
+    def from_density(density: float):
+        silver_mix = guess_silver_mix_by_density(density)
+        speed_of_sound = calc_speed_of_sound(mixture_linear_volume(SILVER_YOUNG_MODULUS, silver_mix, EPOXY_YOUNG_MODULUS, 1 - silver_mix), density)
+        impedance = calc_impedance(density, speed_of_sound)
+        return Properties(density, silver_mix, speed_of_sound, impedance)
     
-    speed_of_sound = calc_speed_of_sound(young_modulus, density)
-    print(f"- Speed of sound: {speed_of_sound:.0f}m/s")
-    print(f"- Density: {density:.2f}g/cm^3")
+    def get_wavelength(self, frequency):
+        return (self.speed_of_sound / frequency) * 1000
+       
+    def get_quarter_wave_volume(self, frequency):
+        mm3 = math.pi * (15**2) * self.get_wavelength(frequency)/4
+        return mm3 * 0.001
 
-    impedance = calc_impedance(density, speed_of_sound)
-    print(f"- Impedance: {impedance:.2f}MRayls")
-
-    wavelength = (speed_of_sound / 500000) * 1000
-    print(f"- Wavelength: {wavelength:.2f}mm")
-
-    volume_mm = math.pi * (15**2) * wavelength/4 # cubic mm
-    volume_ml = volume_mm * 0.001
-    print(f"- Quarter-wave volume: {volume_ml:.2f}ml")
+def report(name: str, props: Properties):
+    print("===", name, "===")
+    props = Properties.from_density(props)
+    print(f"- Silver mix: {props.mixture:.2f}")    
+    print(f"- Speed of sound: {props.speed_of_sound:.0f}m/s")
+    print(f"- Density: {props.density:.2f}g/cm^3")
+    print(f"- Impedance: {props.impedance:.2f}MRayls")
+    print(f"- Wavelength: {props.get_wavelength(500000):.2f}mm")
+    print(f"- Quarter-wave volume: {props.get_quarter_wave_volume(500000):.2f}ml")
     print()
 
 if __name__ == "__main__":
