@@ -76,9 +76,9 @@ function voxelLength = mmToVoxelLength(mm)
     voxelLength = mm / (grid_size * 1000);
 end
 
-Nx = 150;   % number of grid points in the x direction
-Ny = 150;   % number of grid points in the y direction
-Nz = 200;   % number of grid points in the z direction
+Nx = 100 * 2;   % number of grid points in the x direction
+Ny = 100 * 2;   % number of grid points in the y direction
+Nz = ceil(mmToVoxelLength(80));   % number of grid points in the z direction
 dx = grid_size;   % grid point spacing in the x direction [m]
 dy = grid_size;   % grid point spacing in the y direction [m]
 dz = grid_size;   % grid point spacing in the z direction [m]
@@ -117,13 +117,15 @@ fprintf('E_depth: %f\n', E_depth);
 silverEpoxyRaw = createCylinder(T_radius * 2, E_depth);
 silverEpoxy = makeBig(Nx, Ny, Nz, silverEpoxyRaw, 0, 0, S_z1);
 
+fprintf('E_depth: %f\n', E_depth);
+
 E_z0 = S_z1 + 0;
 E_z1 = ceil(E_z0 + E_depth);
 
 % Lens, PP
 lensDiameter = mmToVoxelLength(30);
-lensRadius = mmToVoxelLength(45.69);
-lensPadding = mmToVoxelLength(1);
+lensRadius = mmToVoxelLength(15.26);
+lensPadding = mmToVoxelLength(0);
 lensRaw = createLens(lensDiameter, lensRadius, lensPadding);
 L_z = E_z1 + 0;
 L_z1 = ceil(L_z + size(lensRaw, 3));
@@ -158,7 +160,7 @@ annotation.mask = annotation.mask + lens;
 
 % Sensors
 sensor.mask = zeros(Nx, Ny, Nz);
-S_start = L_z1;
+S_start = L_z;
 sensor.mask(center, center, S_start:Nz) = 1; % example of a single point sensor
 annotation.mask = annotation.mask + sensor.mask;
 
