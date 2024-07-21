@@ -33,6 +33,7 @@ Here are the components, roughly listed from back to front:
 - Arduino: $25
 - AD9833: $12
 - THS3091: $12
+- Power Supply: $100
 - RF box for housing Driver: ??
 - 3d-printed housing for Pointer: ??
 - Backing epoxy: ??
@@ -41,10 +42,10 @@ Here are the components, roughly listed from back to front:
 - Lens: $25
 - Silver epoxy: $20
 - Ultrasound gel: $10
-- PCB: ??
-- Small electrical components (coupling capacitor, resistors, etc.): ??
+- PCB: ~$5
+- Small electrical components (coupling capacitor, resistors, etc.): ~$10
 
-Known costs: $129
+Known costs: $245
 
 Guess at the rest: $250
 

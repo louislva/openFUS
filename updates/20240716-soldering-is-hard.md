@@ -5,7 +5,8 @@ So, turns out AD9833 is *tiny*, which means it's complicated to solder. Didn't r
 The [AD9833](https://eu.mouser.com/ProductDetail/Analog-Devices/AD9833BRMZ-REEL7?qs=BpaRKvA4VqGlyZCX2gCZvQ%3D%3D) uses **MSOP-10** which is the very small 10-pin SMD (surface-mount) interface. The [THS3091](https://eu.mouser.com/ProductDetail/Texas-Instruments/THS3091D?qs=ZmJdcv7QZ9r%252B6oHoPq%2FUDQ%3D%3D&countryCode=DE&currencyCode=EUR) uses **SOIC-8**.
 
 For the two types of SMD, we can use **breakout boards** that convert from **[the SMD] to DIP**. You can directly attach jumper wires to DIP.
-- [MSOP-10 Breakout Board](https://dk.farnell.com/aries/lcqt-msop10/ic-adaptor-10msop-to-dip-2-54mm/dp/2476034)
+- ~~[MSOP-10 Breakout Board](https://dk.farnell.com/aries/lcqt-msop10/ic-adaptor-10msop-to-dip-2-54mm/dp/2476034)~~
+    - Just get a pre-broken-out [AD9833](https://www.amazon.de/-/da/gp/product/B0C6R1RZP4)
 - [SOIC-8 Breakout Board](https://dk.farnell.com/aries/lcqt-soic8-8/ic-adaptor-8-soic-to-dip-2-54mm/dp/2476033)
 
 ### How to solder (ChatGPT cheatsheet)

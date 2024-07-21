@@ -7,16 +7,15 @@ This is still very much in flux.
 - Raspberry Pi or Arduino
 - Breadboard
 - Male and female jumper wires
-- AD9833: Digital function generator
-- MSOP-10 Breakout Board
-- TODO: Power supply for AD9833 ??? 
+- AD9833: Digital function generator (DIP variant)
+- TODO: Power supply for AD9833 ??? (think Raspberry Pi can handle, actually)
 - Coupling capacitor: Go from positive only AC signal, to positive and negative AC signal
 - n * Op-amp circuit (in parallel)
     - THS3091: High-frequency op-amp
     - SOIC-8 Breakout Board
     - 49k ohm resistor in
     - 1k ohm resistor b
-    - TODO: Power supply for THS3091 ???
+    - Power supply. Either [this](https://dk.rs-online.com/web/p/switch-mode-stromforsyninger-smps/0413655) or [this](https://dk.rs-online.com/web/p/switch-mode-stromforsyninger-smps/1368987); can use experimentation variable power supply for now
     - TODO: coupling capacitor on output
     - TODO: decoupling capacitor on power supply
 - *Either: Send to PZT or have a 1.9 ohm resistor to mimic*

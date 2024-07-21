@@ -57,7 +57,7 @@ WATER_DENSITY = 1000;
 PZT_SPEED = 4000; % Transducer material, PZT-5H
 PZT_DENSITY = 7800; % (source: https://www.steminc.com/piezo/PZ_property.asp)
 
-PP_SPEED = 2565; % Lens material, polypropylene
+PP_SPEED = 2660; % Lens material, polypropylene
 PP_DENSITY = 920;
 
 SE_SPEED = 2548; % Silver epoxy, impedence transformer + electrode
