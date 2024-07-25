@@ -1,115 +1,75 @@
 # [Design](/design.md) → Impedance Matching: Lens & backing
 
-We need to impedence match the [lens](/design/lens.md) (TPX; 1.66 MRayl) and the piezoceramic (PZT-5H; 34.2 MRayl).
+We need to impedence match the [lens](/design/lens.md) (PP; 2.4 MRayl) and the piezoceramic (PZT-5H; 35 MRayl).
 
-To do that, we need a material with an acoustic impedance that is:
+To do that, we can make a quarter-wave transformer layer, which needs to have an acoustic impedance of:
 
-sqrt(1.66 * 34.2) = 7.53 MRayl
+sqrt(2.4 * 35) = 9.17
 
-We want this to be epoxy-based, since it'll be easy to customize, spread, and serve a dual purpose as an adhesive ("glue") for the lens. Ideally, we'd also want it to be conductive, so that it can used to power the piezoceramic (with electrodes on the side, not in the way of the wave).
+We want this to be epoxy-based, since it'll be easy to customize, spread, and serve a dual purpose as an adhesive ("glue") for the lens. Ideally, we'd also want it to be conductive, so that it can used to power the piezoceramic. A good candidate is silver-epoxy, which is sometimes used as a matching layer.
 
-When mixing two materials (like epoxy and a filler), the formula for the acoustic impedance is:
+### Applying it
 
-\[ Z_{\text{mix}} = \sqrt{(Z_1 \cdot v_1 + Z_2 \cdot v_2)(v_1 + v_2)} \]
+Current idea:
+1. Calculate speed-of-sound & then wavelength in the epoxy
+2. Calculate epoxy volume: 30mm diameter * quater-wave thickness
+3. Calculate epoxy weight: volume * density
+4. Use a high-precision scale to place that amount of epoxy in the middle of the piezoceramic disc
+5. Press the piezoceramic disc into the lens, spreading the epoxy evenly, and let it cure. (Probably inside of tube that prevents it from spilling out the sides)
+6. Let it cure
 
-Here:
-- \( Z_{\text{mix}} \) is the acoustic impedance of the mixture.
-- \( Z_1 \) and \( Z_2 \) are the acoustic impedances of materials 1 and 2, respectively.
-- \( v_1 \) and \( v_2 \) are the volume fractions of materials 1 and 2, respectively, where \( v_1 + v_2 = 1 \).
+### Silver epoxy suppliers
 
-### Approach: Epoxy + Silver
+Here are my <u>guesses</u> for the impedence of different pre-mixed silver-epoxies.
 
-[Per ChatGPT](#appendix-chatgpt-calculates-epoxy-silver-ratio), we can use a 7.5% mixture of epoxy and silver (by volume) to get an acoustic impedance of around 7.5 MRayls. The advantage of silver is that it's highly conductive, which is useful for powering the piezoceramic.
+**EM-Tec AG29**
 
-[Per ChatGPT](#apendix-chatgpt-calculates-epoxy-silver-speed-of-sound), the speed of sound in this mixture would be around 3951 m/s. TODO: calculate this by hand, seems fishy.
+Estimated impedence (by reported mixture): 8.61 MRayls
+Estimated impedence (by density): 8.20 MRayls
 
-**How do we mix silver & epoxy?**
+https://www.microtonano.com/EM-Tec-conductive-silver-filled-epoxy
 
-*Easy answer: Buy a premade silver-epoxy,** like [this one](https://www.mouser.com/ProductDetail/MG-Chemicals/8330S-21G?qs=yK3xcw%2FedWGxbq%252BycI%252BFew%3D%3D&utm_id=17222215321&gad_source=1) (or for the [europoors](https://www.praud.pl/kleje_do_elektroniki/kleje_przewodzace_prad_elektryczny/dwuskladnikowe_kleje_epoksydowe/8331d_mg_chemicals))
+**Em-Tec AG32**
 
-Otherwise, my current understanding is: As long as the silver particles are small enough (like < 1/10th the wavelength, or something like that), evenly distributed, and similar sizes, they won't scatter or reflect the ultrasound.
+Estimated impedence (by reported mixture): 6.25 MRayls
 
-For 500khz ultrasound, with a speed of sound of 3951 m/s, the wavelength is:
+https://www.microtonano.com/EM-Tec-conductive-silver-filled-epoxy
 
-3951 m / 500000 = 0.007902 m = 7.902 mm
+**CircuitWorks CW2400**
 
-Which means the silver particles should be < 0.79 mm in size.
+Estimated impedence (by density): 10.5 MRayls
+Estimated impedence (by mechanical properties, as analyzed by ChatGPT): 10 MRayls
 
-- Sigma Aldrich sells silver nanoparticles that are 8 μm (0.008 mm) in size. This is well under the 0.79 mm limit.
+https://eu.mouser.com/ProductDetail/Chemtronics/CW2400
 
-**How do we apply it precisely?**
+**Bondline BONDLINE 2080**
 
-From the wavelength we calculated, the **thickness of the layer** should be 7.902 / 4 = 1.975 mm, to act as a quarter-wave matching layer.
+Estimated impedence (by density): 10.18 MRayls
 
-Current idea: Calcuate the weight of silver-epoxy needed for a 1.975 mm layer, on the area of the piezoceramic disc. Use a high-precision scale to measure the weight of the piezoceramic disc. Add silver-epoxy in the middle until the weight target is reached. Press the piezoceramic disc into the lens, spreading the silver epoxy evenly, and let it cure.
+**MG 8330S**
 
-The lens should probably be wider than the piezoceramic disc, and have a machined inset in the bottom, to insert the piezoceramic disc into.
+Estimated impedence (by density): 7.73 MRayls
 
-### Appendix: ChatGPT calculates epoxy-silver ratio
+**MG 8330D**
 
-To find a mixture of epoxy and silver that gives an acoustic impedance around 7.5 MRayls, we use the weighted average formula for acoustic impedance:
+Estimated impedence (by density): 8.20 MRayls
 
-\[ Z_{\text{mix}} = Z_1 \cdot v_1 + Z_2 \cdot v_2 \]
+**MG 8331D**
 
-Here:
-- \( Z_{\text{mix}} = 7.5 \times 10^6 \) Rayls
-- \( Z_1 \) is the acoustic impedance of epoxy.
-- \( Z_2 \) is the acoustic impedance of silver.
-- \( v_1 \) and \( v_2 \) are the volume fractions of epoxy and silver, respectively, where \( v_1 + v_2 = 1 \).
+Estimated impedence (by density): 5.78 MRayls
+Study [claimed](https://www.sciencedirect.com/science/article/pii/S0041624X1100254X?casa_token=rEts8rk1DtkAAAAA:Y7WaGLIGJZaJsn3oteEy97Z95EHWwbJtJlq0JVtY42URWapPmIVmnqNNXl0wkAGefCOGL3JBvUY) it was 2.6 MRayls. ???
 
-Assuming:
-- Acoustic impedance of epoxy (\( Z_{\text{epoxy}} \)): ~3 MRayls
-- Acoustic impedance of silver (\( Z_{\text{silver}} \)): ~63 MRayls
+**MG 8331S**
 
-Using these values:
+Estimated impedence (by density): 5.84 MRayls
 
-\[ 7.5 \times 10^6 = (3 \times 10^6) \cdot v_1 + (63 \times 10^6) \cdot (1 - v_1) \]
+### Non-silver epoxy matching layers
 
-Solving for \( v_1 \):
+**AZ31B magnesium-alloy**
 
-\[ 7.5 \times 10^6 = 3 \times 10^6 \cdot v_1 + 63 \times 10^6 \cdot (1 - v_1) \]
-\[ 7.5 \times 10^6 = 3 \times 10^6 \cdot v_1 + 63 \times 10^6 - 63 \times 10^6 \cdot v_1 \]
-\[ 7.5 \times 10^6 = 63 \times 10^6 - 60 \times 10^6 \cdot v_1 \]
-\[ 7.5 \times 10^6 - 63 \times 10^6 = -60 \times 10^6 \cdot v_1 \]
-\[ -55.5 \times 10^6 = -60 \times 10^6 \cdot v_1 \]
-\[ v_1 = \frac{55.5 \times 10^6}{60 \times 10^6} \]
-\[ v_1 = 0.925 \]
+Reported impedence: 10.5 MRayls
+https://www.sciencedirect.com/science/article/abs/pii/S0041624X22001500
 
-So, the volume fraction of epoxy (\( v_1 \)) is approximately 0.925 (or 92.5%), and the volume fraction of silver (\( v_2 \)) is approximately 0.075 (or 7.5%).
+**Parylene**
 
-### Apendix: ChatGPT calculates epoxy-silver speed of sound
-
-To find the speed of sound in a mixture of epoxy and silver with a given acoustic impedance, we use the relationship between acoustic impedance, density, and the speed of sound:
-
-\[ Z = \rho \cdot c \]
-
-where:
-- \( \rho \) is the density of the mixture.
-- \( c \) is the speed of sound in the mixture.
-
-First, we estimate the density of the mixture. Assuming we know the densities of epoxy and silver:
-
-- Density of epoxy (\( \rho_{\text{epoxy}} \)): ~1.2 g/cm³ (1200 kg/m³)
-- Density of silver (\( \rho_{\text{silver}} \)): ~10.5 g/cm³ (10500 kg/m³)
-
-Using the volume fractions \( v_1 \) and \( v_2 \) calculated previously:
-
-\[ v_1 = 0.925 \]
-\[ v_2 = 0.075 \]
-
-The density of the mixture (\( \rho_{\text{mix}} \)) can be calculated as:
-
-\[ \rho_{\text{mix}} = \rho_{\text{epoxy}} \cdot v_1 + \rho_{\text{silver}} \cdot v_2 \]
-
-Plugging in the values:
-
-\[ \rho_{\text{mix}} = (1200 \, \text{kg/m}^3) \cdot 0.925 + (10500 \, \text{kg/m}^3) \cdot 0.075 \]
-\[ \rho_{\text{mix}} = 1110 \, \text{kg/m}^3 + 787.5 \, \text{kg/m}^3 \]
-\[ \rho_{\text{mix}} = 1897.5 \, \text{kg/m}^3 \]
-
-Now we use the acoustic impedance \( Z_{\text{mix}} = 7.5 \times 10^6 \) Rayls to find the speed of sound \( c_{\text{mix}} \):
-
-\[ Z_{\text{mix}} = \rho_{\text{mix}} \cdot c_{\text{mix}} \]
-\[ 7.5 \times 10^6 = 1897.5 \cdot c_{\text{mix}} \]
-\[ c_{\text{mix}} = \frac{7.5 \times 10^6}{1897.5} \]
-\[ c_{\text{mix}} \approx 3951 \, \text{m/s} \]
+**Epo-Tek 301**
