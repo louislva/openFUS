@@ -7,3 +7,4 @@
 *.net
 *.op.raw
 *.raw
+.DS_Store
