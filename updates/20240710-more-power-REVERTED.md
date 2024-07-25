@@ -1,4 +1,4 @@
-# Get more power + void the transformer problem
+# ~~Get more power + void the transformer problem~~ (REVERTED, because stupid idea)
 
 Current problems:
 - Even if no transformer problems, our op-amp only gives about 2.32W. This may not be enough power, depending on physics of PZT, lens, etc.
