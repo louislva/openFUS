@@ -11,7 +11,10 @@ def track(camera_matrix, dist_coeffs):
     aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
 
     # Create ArUco parameters
-    parameters = aruco.DetectorParameters()
+    aruco_parameters = aruco.DetectorParameters()
+
+    # ArucoDetector is a class that is used to detect ArUco markers in an image
+    detector = aruco.ArucoDetector(aruco_dict, aruco_parameters)
 
     while True:
         # Capture frame-by-frame
@@ -23,7 +26,7 @@ def track(camera_matrix, dist_coeffs):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # Detect ArUco markers
-        corners, ids, rejected = aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
+        corners, ids, rejected = detector.detectMarkers(gray)
 
         # If markers are detected
         if ids is not None:
@@ -35,8 +38,6 @@ def track(camera_matrix, dist_coeffs):
 
             for i in range(len(ids)):
                 print(f"Marker {ids[i]} at {tvecs[i]}")
-        # Draw detected markers
-        aruco.drawDetectedMarkers(frame, corners, ids)
 
         # Display the resulting frame
         cv2.imshow('ArUco Marker Tracking', frame)
@@ -60,13 +61,6 @@ def save_markers():
         # add 56 padding each side white
         img = cv2.copyMakeBorder(img, 56, 56, 56, 56, cv2.BORDER_CONSTANT, value=[255, 255, 255])
         cv2.imwrite(f"markers/marker_{i}.png", img)
-
-    # # Save chessboard
-    # W = 7
-    # H = 6
-    # img = np.zeros((200 * W, 200 * H, 3), np.uint8)
-    # cv2.drawChessboardCorners(img, (W,H), corners, ret)
-    # cv2.imwrite("chessboard.png", img)
 
 def calibrate_camera():
     H = 3
