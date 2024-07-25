@@ -56,15 +56,21 @@ def save_markers():
     for i in range(250):
         if os.path.exists(f"markers/marker_{i}.png"):
             continue
-        img = aruco.generateImageMarker(aruco_dict, i, 100)
+        img = aruco.generateImageMarker(aruco_dict, i, 400)
+        # add 56 padding each side white
+        img = cv2.copyMakeBorder(img, 56, 56, 56, 56, cv2.BORDER_CONSTANT, value=[255, 255, 255])
         cv2.imwrite(f"markers/marker_{i}.png", img)
 
-    # Save chessboard
-    aruco.calibrateCameraAruco
+    # # Save chessboard
+    # W = 7
+    # H = 6
+    # img = np.zeros((200 * W, 200 * H, 3), np.uint8)
+    # cv2.drawChessboardCorners(img, (W,H), corners, ret)
+    # cv2.imwrite("chessboard.png", img)
 
 def calibrate_camera():
-    H = 6 - 2
-    W = 9 - 2
+    H = 3
+    W = 4
     # Prepare object points (0,0,0), (1,0,0), (2,0,0) ..., (6,5,0)
     objp = np.zeros((H*W,3), np.float32)
     objp[:,:2] = np.mgrid[0:W,0:H].T.reshape(-1,2)
@@ -75,7 +81,7 @@ def calibrate_camera():
 
     # Capture several images of a chessboard from different angles
     cap = cv2.VideoCapture(0)
-    for _ in range(20):  # Capture 20 images
+    for _ in range(1000):
         # Capture frame-by-frame
         ret, frame = cap.read()
         if not ret:
@@ -91,9 +97,12 @@ def calibrate_camera():
         if ret:
             objpoints.append(objp)
             imgpoints.append(corners)
+        
+        if len(objpoints) >= 20:
+            break
 
         # Break the loop if 'q' is pressed
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(50) & 0xFF == ord('q'):
             break
 
     cap.release()
