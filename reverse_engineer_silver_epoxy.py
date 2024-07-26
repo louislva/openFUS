@@ -46,11 +46,23 @@ class Properties:
         self.speed_of_sound = speed_of_sound
         self.impedance = impedance
 
-    def from_density(density: float):
+    @classmethod
+    def from_density(cls, density: float):
         silver_mix = guess_silver_mix_by_density(density)
         speed_of_sound = calc_speed_of_sound(mixture_linear_volume(SILVER_YOUNG_MODULUS, silver_mix, EPOXY_YOUNG_MODULUS, 1 - silver_mix), density)
         impedance = calc_impedance(density, speed_of_sound)
         return Properties(density, silver_mix, speed_of_sound, impedance)
+
+    @classmethod
+    def from_mixture_volume(cls, mixture: float):
+        density = mixture_linear_volume(SILVER_DENSITY, mixture, EPOXY_DENSITY, 1 - mixture)
+        return cls.from_density(density)
+
+    @classmethod
+    def from_mixture_weight(cls, weight: float):
+        # Calculate the volume fraction of silver in the mixture based on weight
+        silver_volume_fraction = weight / (weight + (1 - weight) * (SILVER_DENSITY / EPOXY_DENSITY))
+        return cls.from_mixture_volume(silver_volume_fraction)
     
     def get_wavelength(self, frequency):
         return (self.speed_of_sound / frequency) * 1000
@@ -61,7 +73,6 @@ class Properties:
 
 def report(name: str, props: Properties):
     print("===", name, "===")
-    props = Properties.from_density(props)
     print(f"- Silver mix: {props.mixture:.2f}")    
     print(f"- Speed of sound: {props.speed_of_sound:.0f}m/s")
     print(f"- Density: {props.density:.2f}g/cm^3")
@@ -70,8 +81,21 @@ def report(name: str, props: Properties):
     print(f"- Quarter-wave volume: {props.get_quarter_wave_volume(500000):.2f}ml")
     print()
 
+def report_by_density(name: str, density: float):
+    props = Properties.from_density(density)
+    report(name, props)
+
+def report_by_mixture_weight(name: str, weight: float):
+    props = Properties.from_mixture_weight(weight)
+    report(name, props)
+
 if __name__ == "__main__":
-    report("8330S", 3.06)
-    report("8330D", 3.22)
-    report("8331D", 2.4)
-    report("8331S", 2.42)
+    report_by_density("MG 8330S", 3.06)
+    report_by_density("MG 8330D", 3.22)
+    report_by_density("MG 8331D", 2.4)
+    report_by_density("MG 8331S", 2.42)
+    report_by_mixture_weight("Em-Tec AG29", 0.76)
+    report_by_density("Em-Tec AG29", 3.22) # Shows roughly the same as the other approach
+    report_by_mixture_weight("Em-Tec AG32", 0.65)
+    report_by_density("BONDLINE 2080", 3.89)
+    report_by_density("CircuitWorks CW2400", 4)
