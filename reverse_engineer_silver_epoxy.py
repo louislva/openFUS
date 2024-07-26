@@ -33,7 +33,7 @@ def calc_impedance(density, speed_of_sound):
     return (density * speed_of_sound) / 1000
 
 
-EPOXY_DENSITY = (1.15 + 0.98) / 2 # g/cm^3
+EPOXY_DENSITY = 2.11
 SILVER_DENSITY = 10.49 # g/cm^3
 
 def guess_silver_mix_by_density(density):
