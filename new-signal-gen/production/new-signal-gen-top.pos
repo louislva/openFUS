@@ -1,0 +1,28 @@
+### Footprint positions - created on 2024-08-01T00:29:37+0200 ###
+### Printed by KiCad version 8.0.4
+## Unit = mm, Angle = deg.
+## Side : top
+# Ref     Val                      Package                               PosX       PosY       Rot  Side
+C1        0.1uF                    C_0805_2012Metric                 121.0000  -130.0000  -90.0000  top
+C2        10uF                     C_1206_3216Metric                 115.0000  -130.0000  -90.0000  top
+C3        0.1nF                    C_0805_2012Metric                 140.0000  -129.0000  -90.0000  top
+C4        1uF                      C_0402_1005Metric                 148.0000  -128.5200  -90.0000  top
+C5        0.1uF                    C_0805_2012Metric                 153.0000  -117.9500  -90.0000  top
+C6        0.1uF                    C_0805_2012Metric                 158.0000  -115.0000  -90.0000  top
+C8        0.1uF                    C_0805_2012Metric                 128.0000   -95.9375   90.0000  top
+C9        0.01uF                   C_1206_3216Metric                 144.0000   -65.8875   90.0000  top
+C10       0.1uF                    C_0805_2012Metric                 132.0000   -64.3875   90.0000  top
+C11       10uF_Polarized           CP_Elec_5x5.4                     118.0000   -95.6875  -90.0000  top
+J1        Conn_01x03_Pin           PinHeader_1x03_P2.54mm_Vertical   154.0000   -79.3875  180.0000  top
+J2        Conn_01x03_Pin           PinHeader_1x03_P2.54mm_Vertical   148.0000  -114.0000    0.0000  top
+J3        Conn_01x01_Pin           PinHeader_1x01_P2.54mm_Vertical   144.0000   -93.0000    0.0000  top
+J4        Conn_01x01_Pin           PinHeader_1x01_P2.54mm_Vertical   158.0000  -132.0000    0.0000  top
+J5        Conn_01x02_Pin           PinHeader_1x02_P2.54mm_Vertical   127.0000   -75.3875    0.0000  top
+J6        Conn_01x01_Pin           PinHeader_1x01_P2.54mm_Vertical   149.5000   -60.8875   90.0000  top
+J7        Conn_01x01_Pin           PinHeader_1x01_P2.54mm_Vertical   115.0000  -120.0000    0.0000  top
+R1        50                       R_0402_1005Metric                 148.0000   -69.8775  -90.0000  top
+R2        0                        R_2512_6332Metric                 160.9625  -110.0000  180.0000  top
+U1        AD9833xRM                MSOP-10_3x3mm_P0.5mm              146.0000   -76.0000    0.0000  top
+U2        REF196                   SOIC-8_3.9x4.9mm_P1.27mm          130.0000  -125.0000    0.0000  top
+X1        OCETCLJANF-25.000000MHZ  Crystal_SMD_7050-4Pin_7.0x5.0mm   153.0000  -105.0000   90.0000  top
+## End
