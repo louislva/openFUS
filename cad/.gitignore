@@ -1,0 +1,5 @@
+# STL tends to be exports, e.g. shouldn't be committed
+*.stl
+
+# But in outputs/ they're ok
+!outputs/*.stl
