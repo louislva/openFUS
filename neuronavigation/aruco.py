@@ -38,7 +38,7 @@ def track(camera_matrix, dist_coeffs):
             aruco.drawDetectedMarkers(frame, corners, ids)
 
             # Estimate pose of each marker
-            size = 0.0355
+            size = 0.05
             # size = 0.047
             rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(corners, size, camera_matrix, dist_coeffs)
 
@@ -132,11 +132,11 @@ def calibrate_camera():
     return mtx, dist
 
 def main():
-    save_markers(padding=0, size=512)
+    # save_markers(padding=0, size=512)
     # calibrate_camera()
-    # camera_matrix = np.load("camera_matrix.npy")
-    # dist_coeffs = np.load("dist_coeffs.npy")
-    # track(camera_matrix, dist_coeffs)
+    camera_matrix = np.load("camera_matrix.npy")
+    dist_coeffs = np.load("dist_coeffs.npy")
+    track(camera_matrix, dist_coeffs)
 
 if __name__ == '__main__':
     main()
