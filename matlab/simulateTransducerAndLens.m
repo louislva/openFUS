@@ -136,17 +136,40 @@ annotation.mask = zeros(Nx, Ny, Nz);
 medium.sound_speed = WATER_SPEED * ones(Nx, Ny, Nz);  % [m/s]
 medium.density = WATER_DENSITY * ones(Nx, Ny, Nz);      % [kg/m^3]
 
-% Transducer / Source
-medium.sound_speed = invertVoxels(pzt) .* medium.sound_speed + pzt .* PZT_SPEED;
-medium.density = invertVoxels(pzt) .* medium.density + pzt .* PZT_DENSITY;
-annotation.mask = annotation.mask + pzt;
-source.p_mask = pzt;
+% Define the transducer
+transducer.number_elements = 1; % single element transducer
+transducer.element_width = T_radius * 2; % width of the transducer element [grid points]
+transducer.element_length = ceil(S_depth); % length of the transducer element [grid points]
+transducer.element_spacing = 0; % spacing (kerf width) between the transducer elements [grid points]
+transducer.position = [center - T_radius, center - T_radius, S_z0]; % position of the transducer [grid points]
+transducer.sound_speed = PZT_SPEED; % sound speed of the transducer [m/s]
+transducer.focus_distance = inf; % focus distance [m]
+transducer.elevation_focus_distance = inf; % focus distance in the elevation plane [m]
+transducer.steering_angle = 0; % steering angle [degrees]
+transducer.transmit_apodization = 'Rectangular'; % apodization function
+transducer.receive_apodization = 'Rectangular'; % apodization function
 
-% Actual sine waves from source
+% Define the input signal
 source_freq = 500000; % 500 kHz
-source_mag = 1; % magnitude of the source
-t_array = kgrid.t_array; % time array from the kgrid
-source.p = source_mag * sin(2 * pi * source_freq * t_array);
+source_mag = 0.001; % magnitude of the source
+tone_burst_cycles = 5; % number of tone burst cycles
+input_signal = toneBurst(1 / kgrid.dt, source_freq, tone_burst_cycles);
+
+% Assign the input signal to the transducer
+transducer.input_signal = source_mag * input_signal;
+
+% Create the transducer using the kWaveTransducer class
+transducer = kWaveTransducer(kgrid, transducer);
+
+% Define the medium properties
+medium.sound_speed = WATER_SPEED * ones(Nx, Ny, Nz);  % [m/s]
+medium.density = WATER_DENSITY * ones(Nx, Ny, Nz);    % [kg/m^3]
+
+% Insert the transducer into the medium
+transducer_mask = double(transducer.active_elements_mask);
+medium.sound_speed = invertVoxels(transducer_mask) .* medium.sound_speed + transducer_mask .* PZT_SPEED;
+medium.density = invertVoxels(transducer_mask) .* medium.density + transducer_mask .* PZT_DENSITY;
+annotation.mask = annotation.mask + transducer_mask;
 
 % Silver epoxy
 medium.sound_speed = invertVoxels(silverEpoxy) .* medium.sound_speed + silverEpoxy .* SE_SPEED;
@@ -165,7 +188,7 @@ sensor.mask(center, center, S_start:Nz) = 1; % example of a single point sensor
 annotation.mask = annotation.mask + sensor.mask;
 
 input_args = {'DisplayMask', annotation.mask};
-sensor_data = kspaceFirstOrder3D(kgrid, medium, source, sensor, input_args{:});
+sensor_data = kspaceFirstOrder3D(kgrid, medium, transducer, sensor, input_args{:});
 sensor_data_max = max(sensor_data, [], 2);
 
 % Display sensor data
