@@ -78,6 +78,7 @@ def report(name: str, props: Properties):
     print(f"- Density: {props.density:.2f}g/cm^3")
     print(f"- Impedance: {props.impedance:.2f}MRayls")
     print(f"- Wavelength: {props.get_wavelength(500000):.2f}mm")
+    print(f"- Quarter wavelength: {(props.get_wavelength(500000) / 4):.2f}mm")
     print(f"- Quarter-wave volume: {props.get_quarter_wave_volume(500000):.2f}ml")
     print()
 
@@ -90,12 +91,16 @@ def report_by_mixture_weight(name: str, weight: float):
     report(name, props)
 
 if __name__ == "__main__":
-    report_by_density("MG 8330S", 3.06)
-    report_by_density("MG 8330D", 3.22)
-    report_by_density("MG 8331D", 2.4)
-    report_by_density("MG 8331S", 2.42)
-    report_by_mixture_weight("Em-Tec AG29", 0.76)
-    report_by_density("Em-Tec AG29", 3.22) # Shows roughly the same as the other approach
-    report_by_mixture_weight("Em-Tec AG32", 0.65)
-    report_by_density("BONDLINE 2080", 3.89)
+    # report_by_density("MG 8330S", 3.06)
+    # report_by_density("MG 8330D", 3.22)
+    # report_by_density("MG 8331D", 2.4)
+    # report_by_density("MG 8331S", 2.42)
+    # report_by_mixture_weight("Em-Tec AG29", 0.76)
+    # report_by_density("Em-Tec AG29", 3.22) # Shows roughly the same as the other approach
+    # report_by_mixture_weight("Em-Tec AG32", 0.65)
+    # report_by_density("BONDLINE 2080", 3.89)
     report_by_density("CircuitWorks CW2400", 4)
+    
+    # report_by_mixture_weight("Epoxy", 0)
+    # report_by_mixture_weight("Silver", 1)
+    print("imp by principle CW2400", calc_impedance(4, 1089))
