@@ -3,3 +3,6 @@
 
 # But in outputs/ they're ok
 !outputs/*.stl
+
+# Ehh fuck it, too much stuff in outputs, let's just ignore it all
+outputs/
