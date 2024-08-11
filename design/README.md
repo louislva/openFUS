@@ -48,5 +48,3 @@ Here are the components, roughly listed from back to front:
 Known costs: $245
 
 Guess at the rest: $250
-
-Guess at unknowns: $200
