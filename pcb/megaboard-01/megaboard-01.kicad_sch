@@ -4302,7 +4302,7 @@
 				)
 			)
 		)
-		(property "Value" "Conn_01x01_Pin"
+		(property "Value" "C213184"
 			(at 179.705 39.37 0)
 			(effects
 				(font
@@ -4367,7 +4367,7 @@
 				)
 			)
 		)
-		(property "Value" "Conn_01x01_Pin"
+		(property "Value" "C213184"
 			(at 56.515 76.2 0)
 			(effects
 				(font
@@ -4632,7 +4632,7 @@
 				)
 			)
 		)
-		(property "Value" "Conn_01x03_Pin"
+		(property "Value" "C49257"
 			(at 26.035 45.72 0)
 			(effects
 				(font
@@ -4703,7 +4703,7 @@
 				)
 			)
 		)
-		(property "Value" "Conn_01x01_Pin"
+		(property "Value" "C213184"
 			(at 163.195 39.37 0)
 			(effects
 				(font
@@ -4968,7 +4968,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "RT0603BRE0750RL"
+		(property "Value" "C849792"
 			(at 97.79 41.9099 0)
 			(effects
 				(font
@@ -5526,7 +5526,7 @@
 				)
 			)
 		)
-		(property "Value" "RTT025002FTH"
+		(property "Value" "C166559"
 			(at 110.49 67.31 90)
 			(effects
 				(font
@@ -6234,7 +6234,7 @@
 				)
 			)
 		)
-		(property "Value" "CC0603KRX7R9BB104"
+		(property "Value" "C14663"
 			(at 171.45 36.83 90)
 			(effects
 				(font
@@ -6568,7 +6568,7 @@
 				)
 			)
 		)
-		(property "Value" "Conn_01x02_Pin"
+		(property "Value" "C492401"
 			(at 276.606 33.528 0)
 			(effects
 				(font
@@ -6836,7 +6836,7 @@
 				)
 			)
 		)
-		(property "Value" "Conn_01x01_Pin"
+		(property "Value" "C213184"
 			(at 56.515 85.09 0)
 			(effects
 				(font
@@ -7032,7 +7032,7 @@
 				)
 			)
 		)
-		(property "Value" "0603WAF1001T5E"
+		(property "Value" "C21190"
 			(at 87.63 67.31 90)
 			(effects
 				(font
@@ -7099,7 +7099,7 @@
 				)
 			)
 		)
-		(property "Value" "Conn_01x02_Pin"
+		(property "Value" "C492401"
 			(at 208.534 33.528 0)
 			(effects
 				(font
