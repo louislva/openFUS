@@ -18,6 +18,13 @@ Current idea:
 5. Press the piezoceramic disc into the lens, spreading the epoxy evenly, and let it cure. (Probably inside of tube that prevents it from spilling out the sides)
 6. Let it cure
 
+### CircuitWorks CW2400 design
+
+Estimated impedence (by density, new formula): 9.09 MRayls
+Estimated speed of sound (by density, new formula): 2272 m/s
+500khz wavelength: 4.54mm (2272 m/s / 500000 Hz)
+500khz quater-wave: 1.14mm (4.54mm / 4)
+
 ### Silver epoxy suppliers
 
 Here are my <u>guesses</u> for the impedence of different pre-mixed silver-epoxies.

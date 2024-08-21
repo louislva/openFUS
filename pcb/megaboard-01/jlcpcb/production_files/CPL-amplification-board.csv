@@ -1,0 +1,11 @@
+Designator,Val,Package,Mid X,Mid Y,Rotation,Layer
+C1,CC0603KRX7R9BB104,C_0603_1608Metric,149.08,-84.455,0.0,top
+J1,Conn_01x01_Pin,PinHeader_1x01_P2.54mm_Vertical,144.305,-84.455,0.0,top
+J2,Conn_01x01_Pin,PinHeader_1x01_P2.54mm_Vertical,154.305,-84.455,0.0,top
+J3,Conn_01x03_Pin,PinHeader_1x03_P2.54mm_Vertical,130.81,-93.345,0.0,top
+J4,Conn_01x01_Pin,PinHeader_1x01_P2.54mm_Vertical,130.81,-102.0,0.0,top
+J5,Conn_01x01_Pin,PinHeader_1x01_P2.54mm_Vertical,154.305,-102.0,0.0,top
+R1,RT0603BRE0750RL,R_0603_1608Metric,126.0,-102.0,0.0,top
+R2,0603WAF1001T5E,R_0603_1608Metric,135.255,-93.345,180.0,top
+R3,RTT025002FTH,R_0402_1005Metric,155.575,-96.52,-90.0,top
+U1,THS3091DDAR,TI_SO-PowerPAD-8_ThermalVias,143.985,-97.79,0.0,top
