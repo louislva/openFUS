@@ -25,6 +25,23 @@ Estimated speed of sound (by density, new formula): 2272 m/s
 500khz wavelength: 4.54mm (2272 m/s / 500000 Hz)
 500khz quater-wave: 1.14mm (4.54mm / 4)
 
+So, how much weight of CW2400 do we need to get a 1.14mm thick layer?
+
+Well, let's calculate the volume of the cylinder:
+
+`V = π \* r^2 \* h`
+
+r = 15mm
+h = 1.14mm
+
+V = 3.14 * 15mm^2 * 1.14mm = 805.82mm^3
+
+And, the density of CW2400 is 4 g/cm^3, which is the same as 0.004 g/mm^3. So:
+
+W = V * density = 805.82mm^3 * 0.004 g/mm^3 = 3.22g
+
+Now it's 50/50 between Epoxy/Hardener, which means you should use 1.61g of Epoxy, and 1.61g of Hardener.
+
 ### Silver epoxy suppliers
 
 Here are my <u>guesses</u> for the impedence of different pre-mixed silver-epoxies.
