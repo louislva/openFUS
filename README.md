@@ -43,11 +43,11 @@ For this neuroscience renaissance to happen, **FUS needs to be more accessible**
 
 ### Contributing
 
-We need your help! Here are some of our TODOs:
+We need your help! Here are some things you can help out with:
 
-- Is there a cheap way to generate sine waves at the wattage we need?
-- CNC machining of the lens
-- Testing equipment for focusing (water tank & hydrophone)
-- Neuronavigation software (computer vision that tracks skull + openFUS device)
+- Great software (for neuronavigation, setting sonication params, self-blinding, peer-to-peer science, etc.)
+- Great product design (for the handheld device itself)
+- Driving electronics (e.g. amplify to generate LOTS of power as cheap as possible)
+- Funding (we're not spending any time fundraising, but if you can wire cash with low overhead, it'd help a lot)
 
 If you're interested in contributing, please reach out to Louis Arge [on Twitter](https://x.com/louisvarge), [by email](mailto:louis@muditalabs.ai), or if you have something very concrete: just open a PR.
