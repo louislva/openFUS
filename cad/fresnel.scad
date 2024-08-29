@@ -9,7 +9,7 @@ CYLINDER_FACETS = 96;
 LENS_R  = 18; // 35mm focal length, offset by fresnel being roughly 5cm tall
 LENS_D  = 30;
 LENS_T  = 2;
-BASE_T  = -0.2;
+BASE_T  = 2;
 N_SECTIONS = 7;
 
 
@@ -39,7 +39,7 @@ module fresnel_lens( lens_radius    = LENS_R,
   }
 }
 
-MOLD_THICKNESS = 3;
+MOLD_THICKNESS = 10;
 
 module fresnel_lens_mold( lens_radius    = LENS_R,
                           lens_thickness = LENS_T,
@@ -65,8 +65,5 @@ module fresnel_lens_mold( lens_radius    = LENS_R,
 /******************************************************************************/
 //rendering of part
 
-fresnel_lens();
-// fresnel_lens_mold();
-
-
-
+// fresnel_lens();
+fresnel_lens_mold();
