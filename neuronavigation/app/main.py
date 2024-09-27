@@ -32,6 +32,8 @@ class MRIViewer:
     def __init__(self, file_path):
         self.file_path = file_path
         self.image_3d = self.load_data()
+        self.spacing = (1, 1, 1)
+        self.image_3d, self.spacing = self.scale_image((64, 64, 64))
     
     def load_data(self):
         if os.path.isdir(self.file_path):
@@ -41,6 +43,50 @@ class MRIViewer:
         else:
             raise ValueError("Unsupported file format")
     
+    def scale_image(self, new_shape: tuple[int, int, int]):
+        """
+        Scales the 3D image by the given scale factors using block averaging.
+
+        Parameters:
+            scale_factors (tuple of floats): Scaling factors for each dimension (scale_x, scale_y, scale_z).
+
+        Returns:
+            np.ndarray: The scaled 3D image.
+        """
+
+        old_shape = self.image_3d.shape
+        print(f"Original shape: {old_shape}, New shape: {new_shape}")
+
+        # Initialize the new image with zeros
+        new_image = np.zeros(new_shape, dtype=self.image_3d.dtype)
+
+        # Calculate the ratio of old to new dimensions
+        ratio_x = old_shape[0] / new_shape[0]
+        ratio_y = old_shape[1] / new_shape[1]
+        ratio_z = old_shape[2] / new_shape[2]
+
+        for i in range(new_shape[0]):
+            for j in range(new_shape[1]):
+                for k in range(new_shape[2]):
+                    # Define the boundaries of the block in the original image
+                    x_start = int(i * ratio_x)
+                    x_end = int((i + 1) * ratio_x)
+                    y_start = int(j * ratio_y)
+                    y_end = int((j + 1) * ratio_y)
+                    z_start = int(k * ratio_z)
+                    z_end = int((k + 1) * ratio_z)
+
+                    # Handle edge cases where the block might exceed the image dimensions
+                    x_end = min(x_end, old_shape[0])
+                    y_end = min(y_end, old_shape[1])
+                    z_end = min(z_end, old_shape[2])
+
+                    # Extract the block and compute the average
+                    block = self.image_3d[x_start:x_end, y_start:y_end, z_start:z_end]
+                    new_image[i, j, k] = block.mean()
+
+        return new_image, (ratio_x, ratio_y, ratio_z)
+
     def load_dicom_series(self, directory):
         slices = []
         for filename in os.listdir(directory):
@@ -104,9 +150,9 @@ class MRIViewer:
         if slice_z is None:
             slice_z = self.image_3d.shape[2] - 1
         
-        x = np.arange(0, slice_x + 1)
-        y = np.arange(0, slice_y + 1)
-        z = np.arange(0, slice_z + 1)
+        x = np.arange(0, slice_x + 1) * self.spacing[0]
+        y = np.arange(0, slice_y + 1) * self.spacing[1]
+        z = np.arange(0, slice_z + 1) * self.spacing[2]
         grid = pv.RectilinearGrid(x, y, z)
         grid.point_data["values"] = self.image_3d[:slice_x + 1, :slice_y + 1, :slice_z + 1].flatten(order="F")
         plotter = pv.Plotter()
@@ -126,7 +172,7 @@ class MRIViewer:
         while True:
             position, rotation = tracker.get_transform()
             print("doing", position, rotation)
-            mesh.translate(position * 50, inplace=True)
+            mesh.translate(position * 10, inplace=True)
             # mesh.rotate(rotation, inplace=True)
             plotter.update()        
             
