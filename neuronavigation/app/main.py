@@ -91,7 +91,9 @@ class MRIViewer:
         grid = pv.RectilinearGrid(x, y, z)
         grid.point_data["values"] = self.image_3d[:slice_x + 1, :slice_y + 1, :slice_z + 1].flatten(order="F")
         plotter = pv.Plotter()
-        opacity = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]  # Adjust opacity mapping
+        # opacity = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]  # Adjust opacity mapping
+        # opacity = [0, 0.7, 0.73, 0.77, 0.8, 0.83, 0.86, 0.9, 0.93, 0.96, 1]  # Adjust opacity mapping
+        opacity = [0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]  # Adjust opacity mapping
         plotter.add_volume(grid, cmap='viridis', opacity=opacity)
         plotter.show()
 
