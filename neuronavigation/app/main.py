@@ -77,7 +77,7 @@ class MRIViewer:
 
         return slice_index
     
-    def visualize_3d(self, slice_x=None, slice_y=None, slice_z=None):
+    def visualize_3d(self, slice_x=None, slice_y=None, slice_z=None, mesh_file=None):
         if slice_x is None:
             slice_x = self.image_3d.shape[0] - 1
         if slice_y is None:
@@ -95,6 +95,13 @@ class MRIViewer:
         # opacity = [0, 0.7, 0.73, 0.77, 0.8, 0.83, 0.86, 0.9, 0.93, 0.96, 1]  # Adjust opacity mapping
         opacity = [0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]  # Adjust opacity mapping
         plotter.add_volume(grid, cmap='viridis', opacity=opacity)
+        
+        # Add mesh if provided
+        if mesh_file:
+            mesh = pv.read(mesh_file)
+            mesh = mesh.scale([0.1, 0.1, 0.1])
+            plotter.add_mesh(mesh, color='white', opacity=0.5)
+        
         plotter.show()
 
 # Usage example:
@@ -112,5 +119,5 @@ slice_z = viewer.interactive_slicing(dim='z')
 
 print(slice_x, slice_y, slice_z)
 
-# Interactive 3D volume visualization with rotation support
-viewer.visualize_3d(slice_x=slice_x, slice_y=slice_y, slice_z=slice_z)
+# Interactive 3D volume visualization with rotation support and mesh
+viewer.visualize_3d(slice_x=slice_x, slice_y=slice_y, slice_z=slice_z, mesh_file='Arge/tFUS v3.stl')
