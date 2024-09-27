@@ -5,9 +5,28 @@ import nibabel as nib
 import pyvista as pv
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
+from threading import Thread, Lock
+import time
 
-# print(dir(pv))
-# exit()
+class ArucoTrackerThread(Thread):
+    def __init__(self):
+        self.position = np.zeros(3)
+        self.rotation = np.zeros(3)
+        self.lock = Lock()
+        super().__init__()
+
+    def get_transform(self):
+        with self.lock:
+            return self.position, self.rotation
+
+    def run(self):
+        while True:
+            with self.lock:
+                self.position, self.rotation = self.get_aruco_pos_rot()
+            time.sleep(0.1)
+
+    def get_aruco_pos_rot(self):
+        return np.random.rand(3), np.random.rand(3)
 
 class MRIViewer:
     def __init__(self, file_path):
@@ -77,7 +96,7 @@ class MRIViewer:
 
         return slice_index
     
-    def visualize_3d(self, slice_x=None, slice_y=None, slice_z=None, mesh_file=None):
+    def visualize_3d(self, slice_x=None, slice_y=None, slice_z=None, mesh_file=None, tracker=None):
         if slice_x is None:
             slice_x = self.image_3d.shape[0] - 1
         if slice_y is None:
@@ -101,8 +120,19 @@ class MRIViewer:
             mesh = pv.read(mesh_file)
             mesh = mesh.scale([0.1, 0.1, 0.1])
             plotter.add_mesh(mesh, color='white', opacity=0.5)
+                
+        plotter.show(interactive_update=True)
+
+        while True:
+            position, rotation = tracker.get_transform()
+            print("doing", position, rotation)
+            mesh.translate(position * 50, inplace=True)
+            # mesh.rotate(rotation, inplace=True)
+            plotter.update()        
+            
+            time.sleep(1)
+            # plotter.close()
         
-        plotter.show()
 
 # Usage example:
 # Provide the path to a directory containing DICOM files or a NIfTI file
@@ -113,11 +143,21 @@ viewer = MRIViewer('healthy-t1.nii')
 # viewer.display_slice(slice_index)
 
 # Interactive slicing with a slider
+slice_x, slice_y, slice_z = None, None, None
 slice_x = viewer.interactive_slicing(dim='x')
-slice_y = viewer.interactive_slicing(dim='y')
-slice_z = viewer.interactive_slicing(dim='z')
+# slice_y = viewer.interactive_slicing(dim='y')
+# slice_z = viewer.interactive_slicing(dim='z')
 
 print(slice_x, slice_y, slice_z)
 
+# Start the Aruco tracker thread
+tracker = ArucoTrackerThread()
+tracker.start()
+
+print(tracker.get_transform())
+print(tracker.get_transform())
+time.sleep(1)
+print(tracker.get_transform())
+
 # Interactive 3D volume visualization with rotation support and mesh
-viewer.visualize_3d(slice_x=slice_x, slice_y=slice_y, slice_z=slice_z, mesh_file='Arge/tFUS v3.stl')
+viewer.visualize_3d(slice_x=slice_x, slice_y=slice_y, slice_z=slice_z, mesh_file='Arge/tFUS v3.stl', tracker=tracker)
