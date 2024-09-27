@@ -42,30 +42,54 @@ class MRIViewer:
         plt.axis('off')
         plt.show()
     
-    def interactive_slicing(self):
-        max_index = self.image_3d.shape[2] - 1
+    def interactive_slicing(self, dim='z'):
+        max_index = self.image_3d.shape[
+            'xyz'.index(dim)
+        ] - 1
+        slice_index = max_index // 2      
+
+        def get_slice():
+            nonlocal slice_index
+            if dim == 'x':
+                return self.image_3d[slice_index, :, :]
+            elif dim == 'y':
+                return self.image_3d[:, slice_index, :]
+            elif dim == 'z':
+                return self.image_3d[:, :, slice_index]
+            else:
+                raise ValueError("Invalid dimension")
+            
         fig, ax = plt.subplots()
         plt.subplots_adjust(bottom=0.25)
-        slice_index = max_index // 2
-        l = ax.imshow(self.image_3d[:, :, slice_index], cmap='gray')
+        l = ax.imshow(get_slice(), cmap='gray')
         ax_slice = plt.axes([0.25, 0.1, 0.65, 0.03])
         slice_slider = Slider(ax_slice, 'Slice', 0, max_index, valinit=slice_index, valfmt='%0.0f')
 
         def update(val):
-            idx = int(slice_slider.val)
-            l.set_data(self.image_3d[:, :, idx])
+            nonlocal slice_index
+            slice_index = int(slice_slider.val)
+            plane = get_slice()
+            l.set_data(plane)
             fig.canvas.draw_idle()
 
         slice_slider.on_changed(update)
         plt.show()
+
+        return slice_index
     
-    def visualize_3d(self):
-        grid = pv.RectilinearGrid()
-        x = np.arange(0, self.image_3d.shape[0])
-        y = np.arange(0, self.image_3d.shape[1])
-        z = np.arange(0, self.image_3d.shape[2])
+    def visualize_3d(self, slice_x=None, slice_y=None, slice_z=None):
+        if slice_x is None:
+            slice_x = self.image_3d.shape[0] - 1
+        if slice_y is None:
+            slice_y = self.image_3d.shape[1] - 1
+        if slice_z is None:
+            slice_z = self.image_3d.shape[2] - 1
+        
+        x = np.arange(0, slice_x + 1)
+        y = np.arange(0, slice_y + 1)
+        z = np.arange(0, slice_z + 1)
         grid = pv.RectilinearGrid(x, y, z)
-        grid.point_data["values"] = self.image_3d.flatten(order="F")
+        grid.point_data["values"] = self.image_3d[:slice_x + 1, :slice_y + 1, :slice_z + 1].flatten(order="F")
         plotter = pv.Plotter()
         opacity = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]  # Adjust opacity mapping
         plotter.add_volume(grid, cmap='viridis', opacity=opacity)
@@ -80,7 +104,11 @@ viewer = MRIViewer('healthy-t1.nii')
 # viewer.display_slice(slice_index)
 
 # Interactive slicing with a slider
-viewer.interactive_slicing()
+slice_x = viewer.interactive_slicing(dim='x')
+slice_y = viewer.interactive_slicing(dim='y')
+slice_z = viewer.interactive_slicing(dim='z')
+
+print(slice_x, slice_y, slice_z)
 
 # Interactive 3D volume visualization with rotation support
-viewer.visualize_3d()
+viewer.visualize_3d(slice_x=slice_x, slice_y=slice_y, slice_z=slice_z)
