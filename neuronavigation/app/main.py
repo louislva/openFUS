@@ -220,14 +220,14 @@ class MRIViewer:
         # opacity = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]  # Adjust opacity mapping
         # opacity = [0, 0.7, 0.73, 0.77, 0.8, 0.83, 0.86, 0.9, 0.93, 0.96, 1]  # Adjust opacity mapping
         opacity = [0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]  # Adjust opacity mapping
-        plotter.add_volume(grid, cmap='gray', opacity=opacity)
+        # plotter.add_volume(grid, cmap='gray', opacity=opacity)
         
         # Add mesh if provided
         if mesh_file:
             mesh = pv.read(mesh_file)
-            mesh = mesh.scale([0.1, 0.1, 0.1])
-            plane = pv.Plane(center=(0, 25, 25 + 4), direction=(0, 1, 0), i_size=50, j_size=50)
-            mesh = mesh.merge(plane)
+            # mesh = mesh.scale([10, 10, 10])
+            # plane = pv.Plane(center=(0, 25, 25 + 4), direction=(0, 1, 0), i_size=50, j_size=50)
+            # mesh = mesh.merge(plane)
             plotter.add_mesh(mesh, color='white', opacity=0.5)
                 
         plotter.show(interactive_update=True)
@@ -235,21 +235,31 @@ class MRIViewer:
         last_rotation = np.array([0, 0, 0])
 
         while True:
-            # mesh.Reset()
-            print("shared_list", shared_list)
-            mesh_methods = list(dir(mesh))
-            print("Mesh props:", mesh_methods)
             position = np.array(shared_list[:3])
             rotation = np.array(shared_list[3:])
-            mesh.translate((position * 10) - mesh.center, inplace=True)
+            print("rotation", rotation)
+            # rotation = np.array([
+            #     rotation[2],
+            #     rotation[1],
+            #     rotation[0],
+            # ])
 
-            # Reset the mesh orientation
-            mesh.rotate_z(-last_rotation[2], inplace=True)   
-            mesh.rotate_y(-last_rotation[1], inplace=True)        
-            mesh.rotate_x(-last_rotation[0], inplace=True) 
-            mesh.rotate_x(rotation[0], inplace=True)
-            mesh.rotate_y(rotation[1], inplace=True)
-            mesh.rotate_z(rotation[2], inplace=True)
+            mesh.translate((position) - mesh.center, inplace=True)
+
+            # Undo the previous rotation
+            if np.linalg.norm(last_rotation) != 0:
+                mesh.rotate_vector(
+                    vector=last_rotation / np.linalg.norm(last_rotation),
+                    angle=-np.linalg.norm(last_rotation),
+                    inplace=True
+                )
+
+            # Apply the new rotation
+            mesh.rotate_vector(
+                vector=rotation / np.linalg.norm(rotation),
+                angle=np.linalg.norm(rotation),
+                inplace=True
+            )
             
             last_rotation = rotation
 
@@ -266,11 +276,11 @@ class MRIViewer:
 
         slice_x, slice_y, slice_z = None, None, None
         # Interactive slicing with a slider
-        slice_x = self.interactive_slicing(dim='x')
+        # slice_x = self.interactive_slicing(dim='x')
         # slice_y = viewer.interactive_slicing(dim='y')
         # slice_z = viewer.interactive_slicing(dim='z')
         print(slice_x, slice_y, slice_z)
-        self.visualize_3d(slice_x=slice_x, slice_y=slice_y, slice_z=slice_z, mesh_file='Arge/tFUS v3.stl', shared_list=shared_list)
+        self.visualize_3d(slice_x=slice_x, slice_y=slice_y, slice_z=slice_z, mesh_file='tfus-device-model.stl', shared_list=shared_list)
 
 if __name__ == "__main__":
     # Start the Aruco tracker thread
