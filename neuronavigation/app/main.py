@@ -16,6 +16,21 @@ import numpy as np
 from multiprocessing import Process
 import multiprocessing
 from collections import deque
+from scipy.stats import median_abs_deviation
+
+# Function to filter outliers based on MAD
+def filter_outliers(data, threshold=3.5):
+    print()
+    if len(data) == 0:
+        return data
+    print("data", data)
+    median = np.median(data, axis=0)
+    mad = median_abs_deviation(data, axis=0)
+    if np.any(mad == 0):
+        mad = np.where(mad == 0, 1e-6, mad)  # Prevent division by zero
+    modified_z_scores = 0.6745 * (data - median) / mad
+    mask = np.abs(modified_z_scores) < threshold
+    return data[mask.all(axis=1)]
 
 def aruco_tracker(shared_list):
     camera_matrix = np.load("camera_matrix.npy")
@@ -233,17 +248,19 @@ class MRIViewer:
                 
         plotter.show(interactive_update=True)
 
-        last_rotation = np.array([0, 0, 0])
+        last_rotation = np.array([0.0, 0.0, 0.0])
 
-        position_history = deque(maxlen=10)
-        rotation_history = deque(maxlen=10)
+        position_history = deque(maxlen=25)
+        rotation_history = deque(maxlen=25)
 
         while True:
             position_history.append(shared_list[:3])
             rotation_history.append(shared_list[3:])
 
             # Position is easy to average
-            rolling_average_position = np.mean(position_history, axis=0)
+            filtered_position_history = filter_outliers(np.array(position_history))
+            print("kept", len(filtered_position_history), "out of", len(position_history))
+            rolling_average_position = np.mean(filtered_position_history, axis=0)
 
             # Rotation is harder to average because it loops around
             rotation_rad = np.radians(np.array(rotation_history))
@@ -284,7 +301,7 @@ class MRIViewer:
     
     def start(self):
         manager = multiprocessing.Manager()
-        shared_list = manager.list([0] * 6)  # Initialize with a list containing six elements
+        shared_list = manager.list([0.0] * 6)  # Initialize with a list containing six elements
 
         tracker_process = multiprocessing.Process(target=aruco_tracker, args=(shared_list,))
         tracker_process.start()
