@@ -237,6 +237,7 @@ class MRIViewer:
         while True:
             position = np.array(shared_list[:3])
             rotation = np.array(shared_list[3:])
+            print("position", position)
             print("rotation", rotation)
             # rotation = np.array([
             #     rotation[2],
@@ -244,7 +245,7 @@ class MRIViewer:
             #     rotation[0],
             # ])
 
-            mesh.translate((position) - mesh.center, inplace=True)
+            mesh.translate((position * 1000) - mesh.center, inplace=True)
 
             # Undo the previous rotation
             if np.linalg.norm(last_rotation) != 0:
