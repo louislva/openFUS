@@ -251,7 +251,7 @@ class MRIViewer:
         last_rotation = np.array([0.0, 0.0, 0.0])
 
         position_history = deque(maxlen=25)
-        rotation_history = deque(maxlen=25)
+        rotation_history = deque(maxlen=10)
 
         while True:
             position_history.append(shared_list[:3])
@@ -259,15 +259,22 @@ class MRIViewer:
 
             # Position is easy to average
             filtered_position_history = filter_outliers(np.array(position_history))
-            print("kept", len(filtered_position_history), "out of", len(position_history))
             rolling_average_position = np.mean(filtered_position_history, axis=0)
 
             # Rotation is harder to average because it loops around
             rotation_rad = np.radians(np.array(rotation_history))
             
             # However, sin & cos can easily be averaged
-            sin_sum = np.sum(np.sin(rotation_rad), axis=0)
-            cos_sum = np.sum(np.cos(rotation_rad), axis=0)
+            sin_comp = np.sin(rotation_rad)
+            cos_comp = np.cos(rotation_rad)
+            filtered_sin_comp = filter_outliers(sin_comp)
+            filtered_cos_comp = filter_outliers(cos_comp)
+            sin_sum = np.sum(filtered_sin_comp, axis=0)
+            cos_sum = np.sum(filtered_cos_comp, axis=0)
+
+            print("kept", len(filtered_position_history), "out of", len(position_history), "positions")
+            print("kept", len(filtered_sin_comp), "out of", len(sin_comp), "sines")
+            print("kept", len(filtered_cos_comp), "out of", len(cos_comp), "cosines")
             
             # And then we reconstruct
             rolling_average_rotation = np.degrees(np.arctan2(sin_sum, cos_sum))
