@@ -18,12 +18,7 @@ It's incredible that we have a **non-invasive** way to do the equivalent of putt
 
 ### How tFUS works
 
-You wouldn't expect ultrasound could modulate the brain — electric currents or magnetic fields, sure, but acoustic waves? Apparently yes! The mechanisms are still unknown, but the working theory is:
-
-- Vibrating neurons excites them (more activity)
-- Heating neurons inhibits them (less activity)
-
-Focused ultrasound generates both mechanical vibrations and heat, so it can both excite and inhibit neurons. If you sonicate for 5ms and pause for 95ms, you can vibrate neurons while letting them cool down, and get a net excitatory effect. If you sonicate them 100% of the time, they'll heat up, and you'll get a net inhibitory effect.
+You wouldn't expect ultrasound could modulate the brain — electric currents or magnetic fields, sure, but acoustic waves? Apparently yes! The mechanisms are still unknown, but by changing the parameters of the ultrasound pulses, you can control whether you get a net excitatory or inhibitory effect.
 
 Then, in order to get the ultrasound to the right part of the brain, you need to focus it. This can be done in many ways, but the easiest to illustrate, is if you have a bunch of weak ultrasound beams, which all converge at the same point:
 
