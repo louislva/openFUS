@@ -15,6 +15,7 @@ import numpy as np
 # from threading import Thread
 from multiprocessing import Process
 import multiprocessing
+from collections import deque
 
 def aruco_tracker(shared_list):
     camera_matrix = np.load("camera_matrix.npy")
@@ -52,7 +53,7 @@ def aruco_tracker(shared_list):
             aruco.drawDetectedMarkers(frame, corners, ids)
 
             # Estimate pose of each marker
-            size = 0.035
+            size = 0.05
             # size = 0.047
             rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(corners, size, camera_matrix, dist_coeffs)
 
@@ -234,16 +235,30 @@ class MRIViewer:
 
         last_rotation = np.array([0, 0, 0])
 
+        position_history = deque(maxlen=10)
+        rotation_history = deque(maxlen=10)
+
         while True:
-            position = np.array(shared_list[:3])
-            rotation = np.array(shared_list[3:])
+            position_history.append(shared_list[:3])
+            rotation_history.append(shared_list[3:])
+
+            # Position is easy to average
+            rolling_average_position = np.mean(position_history, axis=0)
+
+            # Rotation is harder to average because it loops around
+            rotation_rad = np.radians(np.array(rotation_history))
+            
+            # However, sin & cos can easily be averaged
+            sin_sum = np.sum(np.sin(rotation_rad), axis=0)
+            cos_sum = np.sum(np.cos(rotation_rad), axis=0)
+            
+            # And then we reconstruct
+            rolling_average_rotation = np.degrees(np.arctan2(sin_sum, cos_sum))
+            
+            position = np.array(rolling_average_position)
+            rotation = np.array(rolling_average_rotation)
             print("position", position)
             print("rotation", rotation)
-            # rotation = np.array([
-            #     rotation[2],
-            #     rotation[1],
-            #     rotation[0],
-            # ])
 
             mesh.translate((position * 1000) - mesh.center, inplace=True)
 
@@ -266,7 +281,6 @@ class MRIViewer:
 
             plotter.update()
             time.sleep(1.0 / 30)
-            # plotter.close()
     
     def start(self):
         manager = multiprocessing.Manager()
