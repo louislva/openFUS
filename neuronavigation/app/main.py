@@ -1,3 +1,5 @@
+# conda activate openfus
+
 import os
 import numpy as np
 import pydicom
@@ -159,12 +161,14 @@ class MRIViewer:
         # opacity = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]  # Adjust opacity mapping
         # opacity = [0, 0.7, 0.73, 0.77, 0.8, 0.83, 0.86, 0.9, 0.93, 0.96, 1]  # Adjust opacity mapping
         opacity = [0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]  # Adjust opacity mapping
-        plotter.add_volume(grid, cmap='viridis', opacity=opacity)
+        # plotter.add_volume(grid, cmap='gray', opacity=opacity)
         
         # Add mesh if provided
         if mesh_file:
             mesh = pv.read(mesh_file)
             mesh = mesh.scale([0.1, 0.1, 0.1])
+            plane = pv.Plane(center=(0, 25, 25 + 4), direction=(0, 1, 0), i_size=50, j_size=50)
+            mesh = mesh.merge(plane)
             plotter.add_mesh(mesh, color='white', opacity=0.5)
                 
         plotter.show(interactive_update=True)
@@ -172,11 +176,12 @@ class MRIViewer:
         while True:
             position, rotation = tracker.get_transform()
             print("doing", position, rotation)
-            mesh.translate(position * 10, inplace=True)
-            # mesh.rotate(rotation, inplace=True)
-            plotter.update()        
-            
-            time.sleep(1)
+            mesh.translate((position * 10) - mesh.center, inplace=True)
+            mesh.rotate_x(rotation[0] * 57, inplace=True)
+            mesh.rotate_y(rotation[1] * 57, inplace=True)
+            mesh.rotate_z(rotation[2] * 57, inplace=True)
+            plotter.update()
+            time.sleep(1.0 / 30)
             # plotter.close()
         
 
@@ -190,7 +195,7 @@ viewer = MRIViewer('healthy-t1.nii')
 
 # Interactive slicing with a slider
 slice_x, slice_y, slice_z = None, None, None
-slice_x = viewer.interactive_slicing(dim='x')
+# slice_x = viewer.interactive_slicing(dim='x')
 # slice_y = viewer.interactive_slicing(dim='y')
 # slice_z = viewer.interactive_slicing(dim='z')
 
@@ -199,11 +204,6 @@ print(slice_x, slice_y, slice_z)
 # Start the Aruco tracker thread
 tracker = ArucoTrackerThread()
 tracker.start()
-
-print(tracker.get_transform())
-print(tracker.get_transform())
-time.sleep(1)
-print(tracker.get_transform())
 
 # Interactive 3D volume visualization with rotation support and mesh
 viewer.visualize_3d(slice_x=slice_x, slice_y=slice_y, slice_z=slice_z, mesh_file='Arge/tFUS v3.stl', tracker=tracker)
