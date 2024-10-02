@@ -7,31 +7,90 @@ import nibabel as nib
 import pyvista as pv
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
-from threading import Thread, Lock
+# from threading import Thread, Lock
 import time
+import cv2
+import cv2.aruco as aruco
+import numpy as np
+# from threading import Thread
+from multiprocessing import Process
+import multiprocessing
 
-class ArucoTrackerThread(Thread):
-    def __init__(self):
-        self.position = np.zeros(3)
-        self.rotation = np.zeros(3)
-        self.lock = Lock()
-        super().__init__()
+def aruco_tracker(shared_list):
+    camera_matrix = np.load("camera_matrix.npy")
+    dist_coeffs = np.load("dist_coeffs.npy")
+    # Initialize the webcam
+    cap = cv2.VideoCapture(0)
 
-    def get_transform(self):
-        with self.lock:
-            return self.position, self.rotation
+    # Define the ArUco dictionary
+    aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_250)
 
-    def run(self):
-        while True:
-            with self.lock:
-                self.position, self.rotation = self.get_aruco_pos_rot()
-            time.sleep(0.1)
+    # Create ArUco parameters
+    aruco_parameters = aruco.DetectorParameters()
 
-    def get_aruco_pos_rot(self):
-        return np.random.rand(3), np.random.rand(3)
+    # ArucoDetector is a class that is used to detect ArUco markers in an image
+    detector = aruco.ArucoDetector(aruco_dict, aruco_parameters)
+    
+    measurement = None
+    last_translation = None
+
+    while True:
+        # Capture frame-by-frame
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        # Convert to grayscale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # Detect ArUco markers
+        corners, ids, rejected = detector.detectMarkers(gray)
+        
+        # If markers are detected
+        if ids is not None:
+            # Draw detected markers
+            aruco.drawDetectedMarkers(frame, corners, ids)
+
+            # Estimate pose of each marker
+            size = 0.035
+            # size = 0.047
+            rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(corners, size, camera_matrix, dist_coeffs)
+
+            for i in range(len(ids)):
+                tvec = np.array(tvecs[i]).round(2)
+                last_translation = tvec
+                rvec = np.array(rvecs[i])
+                rvec_deg = np.degrees(rvec).round(0)
+                if measurement is None:
+                    # print(f"Marker {ids[i]} at {tvec} // {rvec_deg}")
+                    new_list = tvec.tolist()[0] + rvec_deg.tolist()[0]
+                    shared_list[:] = new_list                    
+
+        # Display the resulting frame
+        frame = cv2.flip(frame, 1)
+        cv2.imshow('ArUco Marker Tracking', frame)
+
+        # Break the loop if 'q' is pressed
+        key = cv2.waitKey(1)
+        if key == ord('q'):
+            break
+        elif key == ord('m'):
+            measurement = last_translation
+            # print(f"Measurement: {measurement}")
+        elif key == ord('n'):
+            measurement = None
+        
+        if measurement is not None:
+            distance_to_measurement = (np.linalg.norm(measurement - last_translation) * 100).round(2)
+            # print(f"Distance to measurement: {distance_to_measurement}cm")
+
+    # Release the capture and close windows
+    cap.release()
+    cv2.destroyAllWindows()
+
 
 class MRIViewer:
-    def __init__(self, file_path):
+    def __init__(self, file_path: str):
         self.file_path = file_path
         self.image_3d = self.load_data()
         self.spacing = (1, 1, 1)
@@ -57,7 +116,7 @@ class MRIViewer:
         """
 
         old_shape = self.image_3d.shape
-        print(f"Original shape: {old_shape}, New shape: {new_shape}")
+        # print(f"Original shape: {old_shape}, New shape: {new_shape}")
 
         # Initialize the new image with zeros
         new_image = np.zeros(new_shape, dtype=self.image_3d.dtype)
@@ -144,7 +203,7 @@ class MRIViewer:
 
         return slice_index
     
-    def visualize_3d(self, slice_x=None, slice_y=None, slice_z=None, mesh_file=None, tracker=None):
+    def visualize_3d(self, slice_x=None, slice_y=None, slice_z=None, mesh_file=None, shared_list=None):
         if slice_x is None:
             slice_x = self.image_3d.shape[0] - 1
         if slice_y is None:
@@ -161,7 +220,7 @@ class MRIViewer:
         # opacity = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]  # Adjust opacity mapping
         # opacity = [0, 0.7, 0.73, 0.77, 0.8, 0.83, 0.86, 0.9, 0.93, 0.96, 1]  # Adjust opacity mapping
         opacity = [0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]  # Adjust opacity mapping
-        # plotter.add_volume(grid, cmap='gray', opacity=opacity)
+        plotter.add_volume(grid, cmap='gray', opacity=opacity)
         
         # Add mesh if provided
         if mesh_file:
@@ -173,37 +232,49 @@ class MRIViewer:
                 
         plotter.show(interactive_update=True)
 
+        last_rotation = np.array([0, 0, 0])
+
         while True:
-            position, rotation = tracker.get_transform()
-            print("doing", position, rotation)
+            # mesh.Reset()
+            print("shared_list", shared_list)
+            mesh_methods = list(dir(mesh))
+            print("Mesh props:", mesh_methods)
+            position = np.array(shared_list[:3])
+            rotation = np.array(shared_list[3:])
             mesh.translate((position * 10) - mesh.center, inplace=True)
-            mesh.rotate_x(rotation[0] * 57, inplace=True)
-            mesh.rotate_y(rotation[1] * 57, inplace=True)
-            mesh.rotate_z(rotation[2] * 57, inplace=True)
+
+            # Reset the mesh orientation
+            mesh.rotate_z(-last_rotation[2], inplace=True)   
+            mesh.rotate_y(-last_rotation[1], inplace=True)        
+            mesh.rotate_x(-last_rotation[0], inplace=True) 
+            mesh.rotate_x(rotation[0], inplace=True)
+            mesh.rotate_y(rotation[1], inplace=True)
+            mesh.rotate_z(rotation[2], inplace=True)
+            
+            last_rotation = rotation
+
             plotter.update()
             time.sleep(1.0 / 30)
             # plotter.close()
-        
+    
+    def start(self):
+        manager = multiprocessing.Manager()
+        shared_list = manager.list([0] * 6)  # Initialize with a list containing six elements
 
-# Usage example:
-# Provide the path to a directory containing DICOM files or a NIfTI file
-viewer = MRIViewer('healthy-t1.nii')
+        tracker_process = multiprocessing.Process(target=aruco_tracker, args=(shared_list,))
+        tracker_process.start()
 
-# # Display a single 2D slice
-# slice_index = 50  # Change this index to see different slices
-# viewer.display_slice(slice_index)
+        slice_x, slice_y, slice_z = None, None, None
+        # Interactive slicing with a slider
+        slice_x = self.interactive_slicing(dim='x')
+        # slice_y = viewer.interactive_slicing(dim='y')
+        # slice_z = viewer.interactive_slicing(dim='z')
+        print(slice_x, slice_y, slice_z)
+        self.visualize_3d(slice_x=slice_x, slice_y=slice_y, slice_z=slice_z, mesh_file='Arge/tFUS v3.stl', shared_list=shared_list)
 
-# Interactive slicing with a slider
-slice_x, slice_y, slice_z = None, None, None
-# slice_x = viewer.interactive_slicing(dim='x')
-# slice_y = viewer.interactive_slicing(dim='y')
-# slice_z = viewer.interactive_slicing(dim='z')
+if __name__ == "__main__":
+    # Start the Aruco tracker thread
+    viewer = MRIViewer(file_path='healthy-t1.nii')
+    viewer.start()
 
-print(slice_x, slice_y, slice_z)
-
-# Start the Aruco tracker thread
-tracker = ArucoTrackerThread()
-tracker.start()
-
-# Interactive 3D volume visualization with rotation support and mesh
-viewer.visualize_3d(slice_x=slice_x, slice_y=slice_y, slice_z=slice_z, mesh_file='Arge/tFUS v3.stl', tracker=tracker)
+    viewer.join()
